@@ -1,7 +1,7 @@
 {
-  "name": "caderneta-caipira-controle-chuvas",
+  "name": "caderneta-caipira-portal",
   "version": "1.0.0",
-  "description": "Caderneta Caipira - Controle de Chuvas - Sistema de monitoramento pluviométrico",
+  "description": "Portal Caderneta Caipira - Sistema de autenticação e dashboard",
   "main": "index.html",
   "scripts": {
     "dev": "vite",
@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "keywords": [
-    "pluviometro",
-    "agricultura",
+    "portal",
+    "autenticacao",
     "gestao-rural",
     "caipira"
   ],
@@ -19,9 +19,8 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "chart.js": "^4.4.0",
-    "react-chartjs-2": "^5.2.0",
-    "date-fns": "^3.0.0",
+    "react-router-dom": "^6.21.0",
+    "firebase": "^10.7.1",
     "lucide-react": "^0.303.0"
   },
   "devDependencies": {
