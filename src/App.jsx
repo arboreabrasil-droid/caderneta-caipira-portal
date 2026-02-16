@@ -31,8 +31,9 @@ function App() {
             <img 
               src="/logo-caipira.png" 
               alt="Caipira da Cidade" 
-              className="h-8 sm:h-10 lg:h-12 w-auto object-contain"
+              className="h-6 sm:h-8 lg:h-10 w-auto object-contain"
             />
+            <span className="text-sm sm:text-base lg:text-lg font-semibold">CAIPIRA DA CIDADE</span>
           </div>
 
           <div className="mt-4 lg:mt-0">
