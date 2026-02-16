@@ -28,12 +28,11 @@ function App() {
         
         <div className="relative z-10 p-6 sm:p-8 lg:p-12 flex flex-col justify-between text-white min-h-[200px] lg:min-h-screen">
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H4a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z" />
-              </svg>
-            </div>
-            <span className="text-sm sm:text-base lg:text-lg font-semibold">CAIPIRA DA CIDADE</span>
+            <img 
+              src="/logo-caipira.png" 
+              alt="Caipira da Cidade" 
+              className="h-8 sm:h-10 lg:h-12 w-auto object-contain"
+            />
           </div>
 
           <div className="mt-4 lg:mt-0">
