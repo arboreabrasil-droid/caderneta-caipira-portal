@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth, provider } from './firebase';
+import { verificarAcesso } from './auth';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [acesso, setAcesso] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [verificando, setVerificando] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        setVerificando(true);
+        const temAcesso = await verificarAcesso(currentUser.email);
+        setAcesso(temAcesso);
+        setVerificando(false);
+      }
       setUser(currentUser);
       setLoading(false);
     });
@@ -24,9 +33,10 @@ function App() {
 
   const handleLogout = async () => {
     await signOut(auth);
+    setAcesso(false);
   };
 
-  if (loading) {
+  if (loading || verificando) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
         <p className="text-gray-500 text-sm">Carregando...</p>
@@ -34,75 +44,59 @@ function App() {
     );
   }
 
-  // Usuário logado — tela temporária de boas-vindas
-  if (user) {
+  if (user && acesso) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-green-50 p-6">
-        <img
-          src={user.photoURL}
-          alt={user.displayName}
-          className="w-16 h-16 rounded-full mb-4"
-        />
-        <h2 className="text-2xl font-bold text-green-800 mb-1">
-          Olá, {user.displayName}! 🌱
-        </h2>
-        <p className="text-gray-600 text-sm mb-6">{user.email}</p>
-        <button
-          onClick={handleLogout}
-          className="text-sm text-red-600 hover:text-red-800 underline"
-        >
-          Sair
+        <img src={user.photoURL} alt={user.displayName} className="w-16 h-16 rounded-full mb-4" />
+        <h2 className="text-2xl font-bold text-green-800 mb-1">Olá, {user.displayName}! 🌱</h2>
+        <p className="text-gray-600 text-sm mb-2">{user.email}</p>
+        <p className="text-green-600 text-sm font-medium mb-6">✅ Acesso liberado</p>
+        <button onClick={handleLogout} className="text-sm text-red-600 hover:text-red-800 underline">Sair</button>
+      </div>
+    );
+  }
+
+  if (user && !acesso) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-amber-50 p-6">
+        <img src={user.photoURL} alt={user.displayName} className="w-16 h-16 rounded-full mb-4" />
+        <h2 className="text-2xl font-bold text-amber-800 mb-2">Acesso não autorizado</h2>
+        <p className="text-gray-600 text-sm text-center max-w-sm mb-6">
+          O e-mail <strong>{user.email}</strong> não possui um convite ativo.
+          Solicite um convite no canal Caipira da Cidade.
+        </p>
+        <button onClick={handleLogout} className="text-sm text-red-600 hover:text-red-800 underline">
+          Sair e tentar com outro e-mail
         </button>
       </div>
     );
   }
 
-  // Tela de login
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
-      {/* Lado Esquerdo - Imagem e Branding */}
-      <div className="relative w-full lg:w-1/2 min-h-[200px] lg:min-h-screen bg-gradient-to-br from-amber-100 to-green-100 overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80')",
-          }}
-        >
+      <div className="relative w-full lg:w-1/2 min-h-[200px] lg:min-h-screen overflow-hidden">
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80')" }}>
           <div className="absolute inset-0 bg-black/30"></div>
         </div>
-
         <div className="relative z-10 p-6 sm:p-8 lg:p-12 flex flex-col justify-between text-white min-h-[200px] lg:min-h-screen">
           <div className="flex items-center gap-2 sm:gap-3">
-            <img
-              src="/logo-caipira.png"
-              alt="Caipira da Cidade"
-              className="h-10 sm:h-12 lg:h-14 w-auto object-contain"
-            />
+            <img src="/logo-caipira.png" alt="Caipira da Cidade" className="h-10 sm:h-12 lg:h-14 w-auto object-contain" />
             <span className="text-sm sm:text-base lg:text-lg font-semibold">CAIPIRA DA CIDADE</span>
           </div>
-
           <div className="mt-4 lg:mt-0">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4 leading-tight">
-              Caderneta Caipira
-            </h1>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4 leading-tight">Caderneta Caipira</h1>
             <p className="text-sm sm:text-base lg:text-lg text-white/90 max-w-md">
-              Seu portal de ferramentas e aplicativos para a vida no campo.
-              Exclusivo para membros convidados.
+              Seu portal de ferramentas e aplicativos para a vida no campo. Exclusivo para membros convidados.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Lado Direito - Login */}
       <div className="flex-1 flex items-center justify-center p-6 sm:p-8 lg:p-12 bg-white">
         <div className="w-full max-w-md">
           <div className="mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-              Bem-vindo de volta
-            </h2>
-            <p className="text-sm sm:text-base text-gray-600">
-              Entre com sua conta Google para acessar seus aplicativos
-            </p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Bem-vindo de volta</h2>
+            <p className="text-sm sm:text-base text-gray-600">Entre com sua conta Google para acessar seus aplicativos</p>
           </div>
 
           <button
@@ -120,9 +114,7 @@ function App() {
 
           <p className="mt-6 text-center text-xs sm:text-sm text-gray-600">
             Não tem acesso?{' '}
-            <span className="text-green-700 font-semibold">
-              Solicite um convite no canal
-            </span>
+            <span className="text-green-700 font-semibold">Solicite um convite no canal</span>
           </p>
 
           <p className="mt-8 text-center text-[10px] sm:text-xs text-gray-500">
