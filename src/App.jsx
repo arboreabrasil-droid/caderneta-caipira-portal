@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth, provider } from './firebase';
 import { verificarAcesso } from './auth';
+import Portal from './Portal';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -16,6 +17,8 @@ function App() {
         const temAcesso = await verificarAcesso(currentUser.email);
         setAcesso(temAcesso);
         setVerificando(false);
+      } else {
+        setAcesso(false);
       }
       setUser(currentUser);
       setLoading(false);
@@ -45,25 +48,16 @@ function App() {
   }
 
   if (user && acesso) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-green-50 p-6">
-        <img src={user.photoURL} alt={user.displayName} className="w-16 h-16 rounded-full mb-4" />
-        <h2 className="text-2xl font-bold text-green-800 mb-1">Olá, {user.displayName}! 🌱</h2>
-        <p className="text-gray-600 text-sm mb-2">{user.email}</p>
-        <p className="text-green-600 text-sm font-medium mb-6">✅ Acesso liberado</p>
-        <button onClick={handleLogout} className="text-sm text-red-600 hover:text-red-800 underline">Sair</button>
-      </div>
-    );
+    return <Portal user={user} />;
   }
 
   if (user && !acesso) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-amber-50 p-6">
-        <img src={user.photoURL} alt={user.displayName} className="w-16 h-16 rounded-full mb-4" />
+        <img src="/logo-caipira.png" alt="Caipira da Cidade" className="h-16 w-auto mb-6" />
         <h2 className="text-2xl font-bold text-amber-800 mb-2">Acesso não autorizado</h2>
         <p className="text-gray-600 text-sm text-center max-w-sm mb-6">
           O e-mail <strong>{user.email}</strong> não possui um convite ativo.
-          Solicite um convite no canal Caipira da Cidade.
         </p>
         <button onClick={handleLogout} className="text-sm text-red-600 hover:text-red-800 underline">
           Sair e tentar com outro e-mail
@@ -86,7 +80,7 @@ function App() {
           <div className="mt-4 lg:mt-0">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4 leading-tight">Caderneta Caipira</h1>
             <p className="text-sm sm:text-base lg:text-lg text-white/90 max-w-md">
-              Seu portal de ferramentas e aplicativos para a vida no campo. Exclusivo para membros convidados.
+              Seu portal de ferramentas e aplicativos para a vida no campo.
             </p>
           </div>
         </div>
@@ -116,7 +110,6 @@ function App() {
             Não tem acesso?{' '}
             <span className="text-green-700 font-semibold">Solicite um convite no canal</span>
           </p>
-
           <p className="mt-8 text-center text-[10px] sm:text-xs text-gray-500">
             © 2026 Caipira da Cidade. Todos os direitos reservados.
           </p>
