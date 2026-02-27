@@ -10,11 +10,17 @@ import {
   getDocs
 } from 'firebase/firestore';
 
-// Verifica se o usuário logado tem acesso liberado
+// Verifica se o usuário logado tem acesso liberado e retorna o plano
 export async function verificarAcesso(email) {
   const usuarioRef = doc(db, 'usuarios', email);
   const usuarioSnap = await getDoc(usuarioRef);
-  return usuarioSnap.exists() && usuarioSnap.data().ativo === true;
+
+  if (!usuarioSnap.exists() || usuarioSnap.data().ativo !== true) {
+    return { acesso: false, plano: null };
+  }
+
+  const plano = usuarioSnap.data().plano ?? 'essencial';
+  return { acesso: true, plano };
 }
 
 // Valida e ativa um convite
