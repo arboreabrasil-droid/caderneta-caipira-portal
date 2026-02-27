@@ -67,16 +67,18 @@ export async function ativarConvite(token, email) {
 }
 
 // Cria um novo convite (usado pelo painel admin)
-export async function criarConvite(email) {
+// Substitua apenas a função criarConvite no auth.js
+export async function criarConvite(email, plano = 'essencial') {
   const token = Math.random().toString(36).substring(2, 10) +
                 Math.random().toString(36).substring(2, 10);
 
   const expiracao = new Date();
-  expiracao.setDate(expiracao.getDate() + 7); // expira em 7 dias
+  expiracao.setDate(expiracao.getDate() + 7);
 
   await setDoc(doc(db, 'convites', token), {
     token,
     email,
+    plano,        // ← campo novo
     status: 'pendente',
     criadoEm: new Date(),
     expiracao
@@ -84,3 +86,4 @@ export async function criarConvite(email) {
 
   return token;
 }
+

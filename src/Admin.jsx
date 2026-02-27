@@ -7,6 +7,7 @@ function Admin({ user, onVoltar }) {
   const [usuarios, setUsuarios] = useState([]);
   const [convites, setConvites] = useState([]);
   const [emailConvite, setEmailConvite] = useState('');
+  const [planoConvite, setPlanoConvite] = useState('essencial'); // ← NOVO
   const [linkGerado, setLinkGerado] = useState('');
   const [loading, setLoading] = useState(true);
   const [gerandoConvite, setGerandoConvite] = useState(false);
@@ -27,16 +28,24 @@ function Admin({ user, onVoltar }) {
   const handleGerarConvite = async () => {
     if (!emailConvite) return;
     setGerandoConvite(true);
-    const token = await criarConvite(emailConvite);
+    const token = await criarConvite(emailConvite, planoConvite); // ← passa o plano
     const link = `${window.location.origin}/convite?token=${token}`;
     setLinkGerado(link);
     setEmailConvite('');
+    setPlanoConvite('essencial');
     await carregarDados();
     setGerandoConvite(false);
   };
 
   const handleToggleAtivo = async (email, ativoAtual) => {
     await updateDoc(doc(db, 'usuarios', email), { ativo: !ativoAtual });
+    await carregarDados();
+  };
+
+  // ← NOVO: altera o plano do usuário diretamente
+  const handleAlterarPlano = async (email, planoAtual) => {
+    const novoPlano = planoAtual === 'essencial' ? 'completo' : 'essencial';
+    await updateDoc(doc(db, 'usuarios', email), { plano: novoPlano });
     await carregarDados();
   };
 
@@ -75,6 +84,15 @@ function Admin({ user, onVoltar }) {
               onChange={e => setEmailConvite(e.target.value)}
               className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
+            {/* ← NOVO: seletor de plano */}
+            <select
+              value={planoConvite}
+              onChange={e => setPlanoConvite(e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            >
+              <option value="essencial">Essencial</option>
+              <option value="completo">Completo</option>
+            </select>
             <button
               onClick={handleGerarConvite}
               disabled={gerandoConvite || !emailConvite}
@@ -110,16 +128,29 @@ function Admin({ user, onVoltar }) {
                       Cadastrado em: {u.cadastradoEm?.toDate?.()?.toLocaleDateString('pt-BR') ?? '—'}
                     </p>
                   </div>
-                  <button
-                    onClick={() => handleToggleAtivo(u.email, u.ativo)}
-                    className={`text-xs px-3 py-1 rounded-full font-medium ${
-                      u.ativo
-                        ? 'bg-green-100 text-green-800 hover:bg-red-100 hover:text-red-800'
-                        : 'bg-red-100 text-red-800 hover:bg-green-100 hover:text-green-800'
-                    }`}
-                  >
-                    {u.ativo ? '✅ Ativo' : '❌ Inativo'}
-                  </button>
+                  {/* ← NOVO: botão de plano + botão ativo/inativo */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleAlterarPlano(u.email, u.plano ?? 'essencial')}
+                      className={`text-xs px-3 py-1 rounded-full font-medium ${
+                        (u.plano ?? 'essencial') === 'completo'
+                          ? 'bg-purple-100 text-purple-800 hover:bg-purple-200'
+                          : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+                      }`}
+                    >
+                      {(u.plano ?? 'essencial') === 'completo' ? '⭐ Completo' : '🔹 Essencial'}
+                    </button>
+                    <button
+                      onClick={() => handleToggleAtivo(u.email, u.ativo)}
+                      className={`text-xs px-3 py-1 rounded-full font-medium ${
+                        u.ativo
+                          ? 'bg-green-100 text-green-800 hover:bg-red-100 hover:text-red-800'
+                          : 'bg-red-100 text-red-800 hover:bg-green-100 hover:text-green-800'
+                      }`}
+                    >
+                      {u.ativo ? '✅ Ativo' : '❌ Inativo'}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -140,7 +171,8 @@ function Admin({ user, onVoltar }) {
                   <div>
                     <p className="text-sm font-medium text-gray-800">{c.email}</p>
                     <p className="text-xs text-gray-500">
-                      Status: <span className={c.status === 'aceito' ? 'text-green-600' : 'text-amber-600'}>{c.status}</span>
+                      Plano: <span className="font-medium text-gray-700 capitalize">{c.plano ?? 'essencial'}</span>
+                      {' · '}Status: <span className={c.status === 'aceito' ? 'text-green-600' : 'text-amber-600'}>{c.status}</span>
                       {' · '}Expira: {c.expiracao?.toDate?.()?.toLocaleDateString('pt-BR') ?? '—'}
                     </p>
                   </div>
