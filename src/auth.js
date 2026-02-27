@@ -25,7 +25,6 @@ export async function verificarAcesso(email) {
 
 // Valida e ativa um convite
 export async function ativarConvite(token, email) {
-  // Busca o convite pelo token
   const convitesRef = collection(db, 'convites');
   const q = query(convitesRef, where('token', '==', token));
   const querySnap = await getDocs(q);
@@ -37,37 +36,33 @@ export async function ativarConvite(token, email) {
   const conviteDoc = querySnap.docs[0];
   const convite = conviteDoc.data();
 
-  // Verifica se já foi usado
   if (convite.status === 'aceito') {
     return { sucesso: false, erro: 'Este convite já foi utilizado.' };
   }
 
-  // Verifica se expirou
   const agora = new Date();
   const expiracao = convite.expiracao.toDate();
   if (agora > expiracao) {
     return { sucesso: false, erro: 'Este convite expirou.' };
   }
 
-  // Verifica se o e-mail bate com o convite
   if (convite.email !== email) {
     return { sucesso: false, erro: 'Este convite não pertence a este e-mail.' };
   }
 
-  // Ativa o convite e cria o usuário
   await updateDoc(conviteDoc.ref, { status: 'aceito' });
   await setDoc(doc(db, 'usuarios', email), {
     email,
     ativo: true,
     cadastradoEm: new Date(),
-    membroCanal: false
+    membroCanal: false,
+    plano: convite.plano ?? 'essencial'  // ← única linha que mudou
   });
 
   return { sucesso: true };
 }
 
 // Cria um novo convite (usado pelo painel admin)
-// Substitua apenas a função criarConvite no auth.js
 export async function criarConvite(email, plano = 'essencial') {
   const token = Math.random().toString(36).substring(2, 10) +
                 Math.random().toString(36).substring(2, 10);
@@ -78,7 +73,7 @@ export async function criarConvite(email, plano = 'essencial') {
   await setDoc(doc(db, 'convites', token), {
     token,
     email,
-    plano,        // ← campo novo
+    plano,
     status: 'pendente',
     criadoEm: new Date(),
     expiracao
@@ -86,4 +81,3 @@ export async function criarConvite(email, plano = 'essencial') {
 
   return token;
 }
-
