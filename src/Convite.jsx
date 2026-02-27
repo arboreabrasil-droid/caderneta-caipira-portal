@@ -19,8 +19,8 @@ function Convite() {
 
       if (currentUser && token) {
         setStatus('processando');
-        const jaTemAcesso = await verificarAcesso(currentUser.email);
-        if (jaTemAcesso) {
+        const resultadoAcesso = await verificarAcesso(currentUser.email);
+        if (resultadoAcesso.acesso) {
           setStatus('sucesso');
           setMensagem('Você já tem acesso! Redirecionando...');
           setTimeout(() => window.location.href = '/', 2000);
