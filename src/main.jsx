@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App'
 import Convite from './Convite'
-import Termos from './Termos'   
+import Termos from './Termos'          // ← ADICIONE ESTA LINHA
 import './styles/index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
