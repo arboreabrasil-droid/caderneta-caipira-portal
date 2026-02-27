@@ -5,13 +5,15 @@ import App from './App'
 import Convite from './Convite'
 import './styles/index.css'
 
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/convite" element={<Convite />} />
-      </Routes>
+          <Route path="/convite" element={<Convite />} />
+          <Route path="/termos" element={<Termos />} />
+        </Routes>
     </BrowserRouter>
   </React.StrictMode>
 )

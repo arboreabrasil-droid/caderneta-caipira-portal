@@ -16,11 +16,13 @@ export async function verificarAcesso(email) {
   const usuarioSnap = await getDoc(usuarioRef);
 
   if (!usuarioSnap.exists() || usuarioSnap.data().ativo !== true) {
-    return { acesso: false, plano: null };
+    return { acesso: false, plano: null, aceitouTermos: false };
   }
 
   const plano = usuarioSnap.data().plano ?? 'essencial';
-  return { acesso: true, plano };
+  const aceitouTermos = usuarioSnap.data().aceitouTermos === true;
+
+  return { acesso: true, plano, aceitouTermos };
 }
 
 // Valida e ativa um convite
