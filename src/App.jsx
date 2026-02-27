@@ -7,6 +7,7 @@ import Portal from './Portal';
 function App() {
   const [user, setUser] = useState(null);
   const [acesso, setAcesso] = useState(false);
+  const [plano, setPlano] = useState(null);
   const [loading, setLoading] = useState(true);
   const [verificando, setVerificando] = useState(false);
 
@@ -14,11 +15,13 @@ function App() {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setVerificando(true);
-        const temAcesso = await verificarAcesso(currentUser.email);
-        setAcesso(temAcesso);
+        const resultado = await verificarAcesso(currentUser.email);
+        setAcesso(resultado.acesso);
+        setPlano(resultado.plano);
         setVerificando(false);
       } else {
         setAcesso(false);
+        setPlano(null);
       }
       setUser(currentUser);
       setLoading(false);
@@ -37,6 +40,7 @@ function App() {
   const handleLogout = async () => {
     await signOut(auth);
     setAcesso(false);
+    setPlano(null);
   };
 
   if (loading || verificando) {
@@ -48,7 +52,7 @@ function App() {
   }
 
   if (user && acesso) {
-    return <Portal user={user} />;
+    return <Portal user={user} plano={plano} />;
   }
 
   if (user && !acesso) {
@@ -92,7 +96,6 @@ function App() {
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Bem-vindo de volta</h2>
             <p className="text-sm sm:text-base text-gray-600">Entre com sua conta Google para acessar seus aplicativos</p>
           </div>
-
           <button
             onClick={handleGoogleLogin}
             className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm sm:text-base"
@@ -105,7 +108,6 @@ function App() {
             </svg>
             <span className="font-medium text-gray-700">Continuar com Google</span>
           </button>
-
           <p className="mt-6 text-center text-xs sm:text-sm text-gray-600">
             Não tem acesso?{' '}
             <span className="text-green-700 font-semibold">Solicite um convite no canal</span>

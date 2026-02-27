@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { signOut } from 'firebase/auth';
 import { auth } from './firebase';
 import Admin from './Admin';
+import { MODULOS_POR_PLANO, MODULOS_INFO } from './config/planos';
 
-function Portal({ user }) {
+function Portal({ user, plano }) {
   const [mostrarAdmin, setMostrarAdmin] = useState(false);
 
   const handleLogout = async () => {
@@ -13,6 +14,12 @@ function Portal({ user }) {
   if (mostrarAdmin) {
     return <Admin user={user} onVoltar={() => setMostrarAdmin(false)} />;
   }
+
+  // Módulos liberados para o plano do usuário
+  const modulosAtivos = MODULOS_POR_PLANO[plano] ?? MODULOS_POR_PLANO['essencial'];
+
+  // Todos os módulos existentes
+  const todosModulos = Object.keys(MODULOS_INFO);
 
   return (
     <div className="min-h-screen bg-green-50">
@@ -42,49 +49,35 @@ function Portal({ user }) {
       </header>
 
       <main className="max-w-5xl mx-auto p-6">
-        <h2 className="text-2xl font-bold text-green-800 mb-2">
+        <h2 className="text-2xl font-bold text-green-800 mb-1">
           Olá, {user.displayName.split(' ')[0]}! 🌱
         </h2>
-        <p className="text-gray-600 text-sm mb-8">
-          Bem-vindo ao seu portal de gestão rural.
+        <p className="text-gray-500 text-xs mb-8 capitalize">
+          Plano: <span className="font-semibold text-green-700">{plano}</span>
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 opacity-50 cursor-not-allowed">
-            <div className="text-3xl mb-3">💰</div>
-            <h3 className="font-bold text-gray-800 mb-1">Financeiro</h3>
-            <p className="text-xs text-gray-500">Em breve</p>
-          </div>
+          {todosModulos.map((id) => {
+            const modulo = MODULOS_INFO[id];
+            const ativo = modulosAtivos.includes(id);
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 opacity-50 cursor-not-allowed">
-            <div className="text-3xl mb-3">🌿</div>
-            <h3 className="font-bold text-gray-800 mb-1">Hortas e Plantios</h3>
-            <p className="text-xs text-gray-500">Em breve</p>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 opacity-50 cursor-not-allowed">
-            <div className="text-3xl mb-3">🐔</div>
-            <h3 className="font-bold text-gray-800 mb-1">Criação de Animais</h3>
-            <p className="text-xs text-gray-500">Em breve</p>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 opacity-50 cursor-not-allowed">
-            <div className="text-3xl mb-3">🌧️</div>
-            <h3 className="font-bold text-gray-800 mb-1">Controle de Chuvas</h3>
-            <p className="text-xs text-gray-500">Em breve</p>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 opacity-50 cursor-not-allowed">
-            <div className="text-3xl mb-3">📓</div>
-            <h3 className="font-bold text-gray-800 mb-1">Caderno de Campo</h3>
-            <p className="text-xs text-gray-500">Em breve</p>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 opacity-50 cursor-not-allowed">
-            <div className="text-3xl mb-3">⚙️</div>
-            <h3 className="font-bold text-gray-800 mb-1">Configurações</h3>
-            <p className="text-xs text-gray-500">Em breve</p>
-          </div>
+            return (
+              <div
+                key={id}
+                className={`bg-white rounded-xl shadow-sm p-6 border transition-all
+                  ${ativo
+                    ? 'border-green-100 hover:shadow-md hover:border-green-300 cursor-pointer'
+                    : 'border-gray-100 opacity-50 cursor-not-allowed'
+                  }`}
+              >
+                <div className="text-3xl mb-3">{modulo.emoji}</div>
+                <h3 className="font-bold text-gray-800 mb-1">{modulo.label}</h3>
+                <p className="text-xs text-gray-500">
+                  {ativo ? '✅ Disponível' : '🔒 Plano Completo'}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </main>
     </div>
