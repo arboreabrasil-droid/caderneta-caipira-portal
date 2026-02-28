@@ -56,7 +56,7 @@ function Portal({ user, plano }) {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto p-8 pt-0 lg:px-16">
+      <main className="max-w-6xl mx-auto p-8 pt-12 lg:px-16">
         {/* TÍTULO SERIFADA + TEXTO DA REFERÊNCIA */}
         <div className="bg-[#F2E8D8]/90 w-screen -ml-[calc(-50vw+1.5rem)] max-w-none mx-auto px-6 lg:px-8 py-8 shadow-lg font-serif border-t border-[#D4B994]">
           <h1 className="text-4xl lg:text-5xl font-black text-[#5D4037] mb-6 text-center">
