@@ -17,46 +17,60 @@ function Portal({ user, plano }) {
 
   // Módulos liberados para o plano do usuário
   const modulosAtivos = MODULOS_POR_PLANO[plano] ?? MODULOS_POR_PLANO['essencial'];
-
-  // Todos os módulos existentes
   const todosModulos = Object.keys(MODULOS_INFO);
 
   return (
-    <div className="min-h-screen bg-green-50">
-      <header className="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <img src="/logo-caipira.png" alt="Caipira da Cidade" className="h-10 w-auto" />
-          <span className="font-bold text-green-800 text-lg">Caderneta Caipira</span>
-        </div>
-        <div className="flex items-center gap-3">
-          {user.email === 'arboreabrasil@gmail.com' && (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-blue-50">
+      <header className="bg-white/80 backdrop-blur-md shadow-sm px-6 py-4 sticky top-0 z-50 border-b border-green-100">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img src="/logo-caipira.png" alt="Caipira da Cidade" className="h-10 w-auto" />
+            <span className="font-bold text-green-800 text-lg">Caderneta Caipira</span>
+          </div>
+          <div className="flex items-center gap-3">
+            {user.email === 'arboreabrasil@gmail.com' && (
+              <button
+                onClick={() => setMostrarAdmin(true)}
+                className="text-xs bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 rounded-full hover:shadow-md font-medium transition-all"
+              >
+                ⚙️ Admin
+              </button>
+            )}
+            <img src={user.photoURL} alt={user.displayName} className="w-9 h-9 rounded-full ring-2 ring-green-200" />
+            <span className="text-sm text-gray-700 hidden md:block max-w-32 truncate">
+              {user.displayName}
+            </span>
             <button
-              onClick={() => setMostrarAdmin(true)}
-              className="text-xs bg-amber-100 text-amber-800 px-3 py-1 rounded-full hover:bg-amber-200 font-medium"
+              onClick={handleLogout}
+              className="text-sm text-red-600 hover:text-red-800 underline font-medium ml-2 hover:no-underline"
             >
-              ⚙️ Admin
+              Sair
             </button>
-          )}
-          <img src={user.photoURL} alt={user.displayName} className="w-8 h-8 rounded-full" />
-          <span className="text-sm text-gray-700 hidden sm:block">{user.displayName}</span>
-          <button
-            onClick={handleLogout}
-            className="text-sm text-red-600 hover:text-red-800 underline ml-2"
-          >
-            Sair
-          </button>
+          </div>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto p-6">
-        <h2 className="text-2xl font-bold text-green-800 mb-1">
-          Olá, {user.displayName.split(' ')[0]}! 🌱
-        </h2>
-        <p className="text-gray-500 text-xs mb-8 capitalize">
-          Plano: <span className="font-semibold text-green-700">{plano}</span>
-        </p>
+      <main className="max-w-6xl mx-auto p-6 lg:p-8 pb-12">
+        {/* Header personalizado */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl lg:text-5xl font-black bg-gradient-to-r from-green-700 via-emerald-600 to-blue-600 bg-clip-text text-transparent mb-4">
+            Seus Módulos
+          </h1>
+          <p className="text-lg text-gray-600 mb-2 max-w-2xl mx-auto">
+            Tudo que você precisa para organizar a fazenda em um só lugar
+          </p>
+          <div className="flex flex-wrap justify-center gap-3 text-sm mt-6">
+            <span className="bg-white/60 px-3 py-1 rounded-full backdrop-blur-sm text-green-800 font-semibold">
+              Plano: <span className="capitalize">{plano}</span>
+            </span>
+            <span className="bg-white/60 px-3 py-1 rounded-full backdrop-blur-sm text-gray-700 font-semibold">
+              {modulosAtivos.length} módulos disponíveis
+            </span>
+          </div>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Grid de módulos turbinado */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {todosModulos.map((id) => {
             const modulo = MODULOS_INFO[id];
             const ativo = modulosAtivos.includes(id);
@@ -64,17 +78,50 @@ function Portal({ user, plano }) {
             return (
               <div
                 key={id}
-                className={`bg-white rounded-xl shadow-sm p-6 border transition-all
-                  ${ativo
-                    ? 'border-green-100 hover:shadow-md hover:border-green-300 cursor-pointer'
-                    : 'border-gray-100 opacity-50 cursor-not-allowed'
-                  }`}
+                className={`group bg-white/80 backdrop-blur-md rounded-3xl shadow-lg hover:shadow-2xl border-2 transition-all duration-500 overflow-hidden hover:scale-[1.02] hover:-translate-y-2 ${
+                  ativo
+                    ? 'border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 hover:border-green-300 cursor-pointer'
+                    : 'border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 cursor-not-allowed opacity-75'
+                }`}
               >
-                <div className="text-3xl mb-3">{modulo.emoji}</div>
-                <h3 className="font-bold text-gray-800 mb-1">{modulo.label}</h3>
-                <p className="text-xs text-gray-500">
-                  {ativo ? '✅ Disponível' : '🔒 Plano Completo'}
-                </p>
+                {/* Ícone turbinado */}
+                <div className="p-8 pb-0">
+                  <div className={`w-24 h-24 rounded-2xl p-4 mx-auto shadow-xl group-hover:shadow-2xl transition-all duration-300 ${
+                    ativo 
+                      ? 'bg-gradient-to-br from-green-400 to-emerald-500 shadow-green-200' 
+                      : 'bg-gradient-to-br from-gray-200 to-gray-300 shadow-gray-200'
+                  }`}>
+                    <img 
+                      src={`/icons/${id === 'chuva' ? 'registro-pluviometrico' : id}.png`}
+                      alt={modulo.label}
+                      className="w-full h-full object-contain drop-shadow-lg"
+                    />
+                  </div>
+                </div>
+
+                {/* Conteúdo */}
+                <div className="p-6 lg:p-8 pb-8">
+                  <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-3 group-hover:text-green-700 transition-colors">
+                    {modulo.label}
+                  </h3>
+                  <p className="text-sm lg:text-base text-gray-600 leading-relaxed mb-6 line-clamp-2">
+                    {modulo.descricao || 'Módulo para gestão da fazenda.'}
+                  </p>
+                  
+                  {ativo ? (
+                    <button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-4 px-6 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200">
+                      🚀 Abrir Módulo
+                    </button>
+                  ) : (
+                    <div className="bg-gradient-to-r from-orange-100 to-amber-100 border-2 border-orange-200 rounded-2xl p-4 text-center">
+                      <div className="w-12 h-12 bg-orange-300 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        🔒
+                      </div>
+                      <p className="text-sm font-semibold text-orange-800 mb-1">Plano Completo</p>
+                      <p className="text-xs text-orange-700">Atualize para acessar</p>
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}
