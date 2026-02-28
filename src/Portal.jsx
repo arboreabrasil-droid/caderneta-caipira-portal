@@ -29,7 +29,7 @@ function Portal({ user, plano }) {
   return (
     <div className="min-h-screen bg-bege-claro">
       {/* HEADER VERDE CHAPADO */}
-      <header className="bg-verde-caipira shadow-md px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+      <header className="bg-[#15803d] shadow-md px-6 py-4 flex items-center justify-between sticky top-0 z-50 font-serif">
         <div className="flex items-center gap-3">
           <img src="/logo-caipira.png" alt="Caipira da Cidade" className="h-10 w-auto" />
           <span className="font-bold text-white text-lg">Caderneta Caipira</span>
@@ -58,15 +58,12 @@ function Portal({ user, plano }) {
 
       <main className="max-w-6xl mx-auto p-8">
         {/* TÍTULO SERIFADA + TEXTO DA REFERÊNCIA */}
-        <div className="bg-marrom-claro rounded-2xl p-8 mb-12 shadow-lg">
-          <h1 className="text-4xl lg:text-5xl font-serif font-black text-marrom-escuro mb-6 text-center">
+        <div className="bg-[#F2E8D8]/90 w-screen -mt-px -ml-6 -mr-6 lg:-ml-8 lg:-mr-8 p-8 lg:px-16 shadow-lg font-serif border-t border-[#D4B994]">
+          <h1 className="text-4xl lg:text-5xl font-black text-[#5D4037] mb-6 text-center">
             Seus Módulos
           </h1>
-          <p className="text-xl text-marrom-medio text-center leading-relaxed max-w-3xl mx-auto mb-2">
-            Escolha o aplicativo que deseja utilizar.
-          </p>
-          <p className="text-lg text-marrom-medio text-center leading-relaxed max-w-2xl mx-auto">
-            Todos os módulos foram pensados para facilitar o dia a dia da sua propriedade.
+          <p className="text-lg text-[#8B6F47] text-center leading-relaxed max-w-4xl mx-auto">
+            Escolha o aplicativo que deseja utilizar. Todos os módulos foram pensados para facilitar o dia a dia da sua propriedade.
           </p>
         </div>
 
