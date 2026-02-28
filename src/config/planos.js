@@ -3,10 +3,37 @@ export const MODULOS_POR_PLANO = {
   completo:  ['financeiro', 'chuva', 'caderno', 'animais', 'hortas'],
 };
 
+// config/planos.js
 export const MODULOS_INFO = {
-  financeiro: { label: 'Financeiro',        emoji: '💰', rota: '/financeiro' },
-  chuva:      { label: 'Controle de Chuvas',emoji: '🌧️', rota: '/chuva' },
-  caderno:    { label: 'Caderno de Campo',  emoji: '📓', rota: '/caderno' },
-  animais:    { label: 'Criação de Animais',emoji: '🐔', rota: '/animais' },
-  hortas:     { label: 'Hortas e Plantios', emoji: '🌿', rota: '/hortas' },
+  financeiro: { 
+    label: 'Controle Financeiro', 
+    emoji: '💰', 
+    rota: '/financeiro',
+    descricao: 'Receitas, despesas e fluxo de caixa da fazenda'
+  },
+  chuva: { 
+    label: 'Registro Pluviométrico', 
+    emoji: '🌧️', 
+    rota: '/chuva',
+    descricao: 'Acompanhe as chuvas de cada safra e estação'
+  },
+  caderno: { 
+    label: 'Caderno de Campo', 
+    emoji: '📓', 
+    rota: '/caderno',
+    descricao: 'Talhões, manejos e observações organizadas'
+  },
+  animais: { 
+    label: 'Criação de Animais', 
+    emoji: '🐔', 
+    rota: '/animais',
+    descricao: 'Loteamentos, vacinas e sanidade animal'
+  },
+  hortas: { 
+    label: 'Hortas e Plantios', 
+    emoji: '🌿', 
+    rota: '/hortas',
+    descricao: 'Plantio, colheita e produtividade por cultura'
+  },
 };
+

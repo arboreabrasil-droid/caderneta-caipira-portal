@@ -4,6 +4,14 @@ import { auth } from './firebase';
 import Admin from './Admin';
 import { MODULOS_POR_PLANO, MODULOS_INFO } from './config/planos';
 
+const ICONES_MAP = {
+  financeiro: '/controle-financeiro.png',
+  chuva: '/registro-pluviometrico.png',
+  caderno: '/caderno-campo.png',
+  animais: '/criacao-animais.png',
+  hortas: '/hortas-plantios.png',
+};
+
 function Portal({ user, plano }) {
   const [mostrarAdmin, setMostrarAdmin] = useState(false);
 
@@ -92,7 +100,7 @@ function Portal({ user, plano }) {
                       : 'bg-gradient-to-br from-gray-200 to-gray-300 shadow-gray-200'
                   }`}>
                     <img 
-                      src={`/icons/${id === 'chuva' ? 'registro-pluviometrico' : id}.png`}
+                      src={ICONES_MAP[id]} 
                       alt={modulo.label}
                       className="w-full h-full object-contain drop-shadow-lg"
                     />
