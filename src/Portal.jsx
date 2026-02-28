@@ -92,20 +92,16 @@ function Portal({ user, plano }) {
                     : 'border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 cursor-not-allowed opacity-75'
                 }`}
               >
-                {/* Ícone turbinado */}
-                <div className="p-8 pb-0">
-                  <div className={`w-24 h-24 rounded-2xl p-4 mx-auto shadow-xl group-hover:shadow-2xl transition-all duration-300 ${
-                    ativo 
-                      ? 'bg-gradient-to-br from-green-400 to-emerald-500 shadow-green-200' 
-                      : 'bg-gradient-to-br from-gray-200 to-gray-300 shadow-gray-200'
-                  }`}>
+                {/* Ícone GRANDE sem fundo */}
+                <div className="p-8 pb-2">
+                  <div className="w-32 h-32 lg:w-40 lg:h-40 mx-auto rounded-2xl shadow-xl group-hover:shadow-2xl transition-all duration-300 overflow-hidden">
                     <img 
-                      src={ICONES_MAP[id]} 
-                      alt={modulo.label}
-                      className="w-full h-full object-contain drop-shadow-lg"
-                    />
-                  </div>
+                    src={ICONES_MAP[id]} 
+                    alt={modulo.label}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
+              </div>
 
                 {/* Conteúdo */}
                 <div className="p-6 lg:p-8 pb-8">
