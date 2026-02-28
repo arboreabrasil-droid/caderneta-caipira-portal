@@ -38,7 +38,7 @@ function Portal({ user, plano }) {
           {user.email === 'arboreabrasil@gmail.com' && (
             <button
               onClick={() => setMostrarAdmin(true)}
-              className="text-xs bg-amarelo-claro text-marrom-escuro px-3 py-1 rounded-md font-medium hover:bg-amarelo-medio"
+              className="text-xs bg-orange-400 text-white px-3 py-1 rounded-md font-medium hover:bg-orange-500 font-serif"
             >
               ⚙️ Admin
             </button>
@@ -56,9 +56,9 @@ function Portal({ user, plano }) {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto p-8">
+      <main className="max-w-6xl mx-auto p-8 pt-0 lg:px-16">
         {/* TÍTULO SERIFADA + TEXTO DA REFERÊNCIA */}
-        <div className="bg-[#F2E8D8]/90 w-screen -mt-px -ml-6 -mr-6 lg:-ml-8 lg:-mr-8 p-8 lg:px-16 shadow-lg font-serif border-t border-[#D4B994]">
+        <div className="bg-[#F2E8D8]/90 w-screen -ml-[calc(-50vw+1.5rem)] max-w-none mx-auto px-6 lg:px-8 py-8 shadow-lg font-serif border-t border-[#D4B994]">
           <h1 className="text-4xl lg:text-5xl font-black text-[#5D4037] mb-6 text-center">
             Seus Módulos
           </h1>
