@@ -4,18 +4,16 @@ const StatCards = ({ registros }) => {
   const mesAtual = 2; // Março = 2
   const anoAtual = 2026;
 
+  // FIX: Extrai MES/ANO da string
   const doMes = registros.filter((r) => {
     const [ano, mesStr] = r.data.split('-');
     const mes = parseInt(mesStr) - 1;
     return mes === mesAtual && parseInt(ano) === anoAtual;
   });
 
-  // FIX: parseFloat garante número
-  const totalMes = doMes
-    .reduce((sum, r) => sum + parseFloat(r.volume || 0), 0)
-    .toFixed(1);
+  const totalMes = doMes.reduce((sum, r) => sum + r.volume, 0).toFixed(1);
   
-  console.log('📊 Cards OK:', {doMes: doMes.length, total: totalMes});
+  console.log('📊 Cards - doMes:', doMes.length, 'Total:', totalMes);
 
   return (
     <div style={{ 
