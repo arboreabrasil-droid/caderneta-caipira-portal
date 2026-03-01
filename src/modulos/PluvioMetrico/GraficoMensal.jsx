@@ -8,8 +8,8 @@ const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov'
 const CORES = ['#5D4037','#8B6F47','#A0522D','#6D9B78','#4A7C59'];
 
 export default function GraficoMensal({ registros }) {
-  const anoAtual = new Date().getFullYear();
-  const anos = [...new Set(registros.map(r => new Date(r.data).getFullYear()))]
+  // FIX: extrai ano da string, sem new Date()
+  const anos = [...new Set(registros.map(r => parseInt(r.data.split('-')[0])))]
     .sort()
     .slice(-5);
 
@@ -18,10 +18,11 @@ export default function GraficoMensal({ registros }) {
     anos.forEach(ano => {
       ponto[ano] = registros
         .filter(r => {
-          const d = new Date(r.data);
-          return d.getFullYear() === ano && d.getMonth() === i;
+          const [rAno, rMes] = r.data.split('-');
+          // FIX: compara direto da string, sem timezone
+          return parseInt(rAno) === ano && parseInt(rMes) - 1 === i;
         })
-        .reduce((acc, r) => acc + r.volume_mm, 0)
+        .reduce((acc, r) => acc + parseFloat(r.volume_mm || r.volume || 0), 0)
         .toFixed(1);
     });
     return ponto;
@@ -41,33 +42,15 @@ export default function GraficoMensal({ registros }) {
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={dados} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#E8D5B7" />
-            <XAxis
-              dataKey="mes"
-              tick={{ fontSize: 12, fontFamily: 'serif', fill: '#8B6F47' }}
-            />
-            <YAxis
-              tick={{ fontSize: 12, fontFamily: 'serif', fill: '#8B6F47' }}
-              unit="mm"
-            />
+            <XAxis dataKey="mes" tick={{ fontSize: 12, fontFamily: 'serif', fill: '#8B6F47' }} />
+            <YAxis tick={{ fontSize: 12, fontFamily: 'serif', fill: '#8B6F47' }} unit="mm" />
             <Tooltip
               formatter={(value) => [`${value} mm`]}
-              contentStyle={{
-                borderRadius: '12px',
-                border: '2px solid #C4A882',
-                fontFamily: 'serif',
-              }}
+              contentStyle={{ borderRadius: '12px', border: '2px solid #C4A882', fontFamily: 'serif' }}
             />
-            <Legend
-              wrapperStyle={{ fontFamily: 'serif', fontSize: 13 }}
-            />
+            <Legend wrapperStyle={{ fontFamily: 'serif', fontSize: 13 }} />
             {anos.map((ano, i) => (
-              <Bar
-                key={ano}
-                dataKey={ano}
-                fill={CORES[i % CORES.length]}
-                radius={[6, 6, 0, 0]}
-                name={String(ano)}
-              />
+              <Bar key={ano} dataKey={ano} fill={CORES[i % CORES.length]} radius={[6, 6, 0, 0]} name={String(ano)} />
             ))}
           </BarChart>
         </ResponsiveContainer>
