@@ -1,58 +1,32 @@
 import React from 'react';
+import { Card, CardContent, Typography } from '@mui/material';
+import { getFirestore, collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 
-function StatCard({ titulo, valor, unidade, icone, cor }) {
-  return (
-    <div className="bg-white border-4 border-marrom-claro rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 font-serif">
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-sm font-semibold text-marrom-medio uppercase tracking-wide">
-          {titulo}
-        </span>
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${cor}`}>
-          {icone}
-        </div>
-      </div>
-      <div className="flex items-end gap-1">
-        <span className="text-3xl font-black text-marrom-escuro">{valor}</span>
-        <span className="text-sm text-marrom-medio mb-1">{unidade}</span>
-      </div>
-    </div>
-  );
-}
+const StatCards = ({ registros }) => {
+  const mesAtual = 2; // Março = 2 (JS: 0=Jan, 1=Fev, 2=Mar)
+  const anoAtual = 2026;
 
-export default function StatCards({ registros }) {
-  const agora = new Date();
-  const mesAtual = agora.getMonth();
-  const anoAtual = agora.getFullYear();
-
+  // FIX: Extrai MES/ANO direto da string sem new Date()
   const doMes = registros.filter((r) => {
-    const d = new Date(r.data);
-    return d.getMonth() === mesAtual && d.getFullYear() === anoAtual;
+    const [ano, mesStr] = r.data.split('-');
+    const mes = parseInt(mesStr) - 1; // Converte "03" → 2
+    return mes === mesAtual && parseInt(ano) === anoAtual;
   });
 
-  const doAno = registros.filter((r) => {
-    const d = new Date(r.data);
-    return d.getFullYear() === anoAtual;
-  });
-
-  const totalMes = doMes.reduce((acc, r) => acc + r.volume_mm, 0).toFixed(1);
-  const totalAno = doAno.reduce((acc, r) => acc + r.volume_mm, 0).toFixed(1);
-  const totalRegistros = registros.length;
-  const mediaMensal = registros.length > 0
-    ? (doAno.reduce((acc, r) => acc + r.volume_mm, 0) / (mesAtual + 1)).toFixed(1)
-    : '0.0';
-
-  const cards = [
-    { titulo: 'Total do Mês',     valor: totalMes,      unidade: 'mm', icone: '🌧️', cor: 'bg-blue-100' },
-    { titulo: 'Total do Ano',     valor: totalAno,      unidade: 'mm', icone: '📅', cor: 'bg-green-100' },
-    { titulo: 'Registros',        valor: totalRegistros, unidade: 'dias', icone: '📋', cor: 'bg-amber-100' },
-    { titulo: 'Média Mensal',     valor: mediaMensal,   unidade: 'mm', icone: '📊', cor: 'bg-purple-100' },
-  ];
+  const totalMes = doMes.reduce((sum, r) => sum + r.volume, 0).toFixed(1);
+  
+  console.log('📊 Cards - doMes:', doMes.length, 'Total:', totalMes);
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      {cards.map((card) => (
-        <StatCard key={card.titulo} {...card} />
-      ))}
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+      <Card>
+        <CardContent>
+          <Typography variant="h6" color="primary">Total do Mês</Typography>
+          <Typography variant="h3">{totalMes} mm</Typography>
+        </CardContent>
+      </Card>
     </div>
   );
-}
+};
+
+export default StatCards;
