@@ -39,7 +39,12 @@ function App() {
 
   const handleGoogleLogin = async () => {
     try {
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      // Captura e salva o token OAuth do Google
+      const credential = result._tokenResponse?.oauthAccessToken;
+      if (credential) {
+        sessionStorage.setItem('google_oauth_token', credential);
+      }
     } catch (error) {
       console.error('Erro no login:', error);
     }
