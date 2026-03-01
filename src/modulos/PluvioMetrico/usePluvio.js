@@ -4,43 +4,45 @@ import { auth } from '../../firebase';
 const FOLDER_NAME = 'Caderneta Caipira';
 const FILE_NAME = 'pluvio.json';
 
-async function getAccessToken() {
-  const user = auth.currentUser;
-  if (!user) return null;
-  const token = await user.getIdToken();
-  return token;
-}
-
-async function getGoogleAccessToken() {
-  return new Promise((resolve) => {
-    const user = auth.currentUser;
-    user.getIdTokenResult().then((result) => {
-      resolve(result.token);
-    });
-  });
-}
-
 export function usePluvio() {
   const [registros, setRegistros] = useState([]);
   const [loading, setLoading] = useState(true);
   const [accessToken, setAccessToken] = useState(null);
   const [fileId, setFileId] = useState(null);
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        // Pega o token OAuth do Google (não o Firebase)
-        const credential = await user.getIdTokenResult();
-        // O token OAuth fica no objeto do provider
-        const oauthToken = user.stsTokenManager?.accessToken || 
-                          sessionStorage.getItem('google_oauth_token');
+    useEffect(() => {
+      const unsubscribe = auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          setRegistros([]);
+          setLoading(false);
+          return;
+        }
+
+        // 1️⃣ PEGA TOKEN DO LOGIN
+        const oauthToken = sessionStorage.getItem('google_oauth_token');
+        console.log('🔑 Token encontrado:', oauthToken ? 'SIM' : 'NÃO');
+
+        if (!oauthToken) {
+          console.error('❌ Sem token OAuth. Faça login novamente.');
+          setLoading(false);
+          return;
+        }
+
         setAccessToken(oauthToken);
-        if (oauthToken) await loadData(oauthToken);
-      }
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
+    
+        // 2️⃣ CARREGA DO DRIVE
+        setLoading(true);
+        try {
+          await loadData(oauthToken);
+        } catch (err) {
+          console.error('❌ Erro ao carregar:', err);
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      return () => unsubscribe();
+    }, []);
 
   async function loadData(token) {
     try {
@@ -88,6 +90,13 @@ export function usePluvio() {
   }
 
   async function salvarRegistro(novoRegistro) {
+    // ✅ VERIFICA se tem token e fileId ANTES de salvar
+    if (!accessToken || !fileId) {
+      console.error('❌ Sem token ou fileId para salvar');
+      alert('Erro: faça login novamente para acessar o Google Drive');
+      return;
+    }
+
     const existente = registros.findIndex(r => r.data === novoRegistro.data);
     let novosRegistros;
     if (existente >= 0) {
@@ -95,6 +104,7 @@ export function usePluvio() {
     } else {
       novosRegistros = [...registros, { ...novoRegistro, id: crypto.randomUUID() }];
     }
+  
     setRegistros(novosRegistros);
     await saveFile(accessToken, fileId, { registros: novosRegistros });
   }
