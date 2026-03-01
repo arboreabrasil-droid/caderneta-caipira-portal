@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { signOut } from 'firebase/auth';
 import { auth } from './firebase';
 import Admin from './Admin';
+import PluvioMetrico from './modulos/PluvioMetrico';
 import { MODULOS_POR_PLANO, MODULOS_INFO } from './config/planos';
 
 const ICONES_MAP = {
@@ -14,6 +15,7 @@ const ICONES_MAP = {
 
 function Portal({ user, plano }) {
   const [mostrarAdmin, setMostrarAdmin] = useState(false);
+  const [moduloAtivo, setModuloAtivo] = useState(null);
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -22,6 +24,10 @@ function Portal({ user, plano }) {
   if (mostrarAdmin) {
     return <Admin user={user} onVoltar={() => setMostrarAdmin(false)} />;
   }
+  if (moduloAtivo === 'chuva') {
+  return <PluvioMetrico user={user} onVoltar={() => setModuloAtivo(null)} />;
+  }
+
 
   const modulosAtivos = MODULOS_POR_PLANO[plano] ?? MODULOS_POR_PLANO['essencial'];
   const todosModulos = Object.keys(MODULOS_INFO);
