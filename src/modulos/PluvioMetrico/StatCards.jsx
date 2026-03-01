@@ -5,7 +5,6 @@ const StatCards = ({ registros }) => {
   const mesAtual = agora.getMonth();
   const anoAtual = agora.getFullYear();
 
-  // Filtro SEM timezone bug
   const doMes = registros.filter((r) => {
     const [ano, mesStr] = r.data.split('-');
     return parseInt(mesStr) - 1 === mesAtual && parseInt(ano) === anoAtual;
@@ -20,7 +19,7 @@ const StatCards = ({ registros }) => {
   const totalAno = doAno.reduce((sum, r) => sum + parseFloat(r.volume_mm || r.volume || 0), 0).toFixed(1);
   const totalRegistros = registros.length;
   const mediaMensal = totalRegistros > 0
-    ? (parseFloat(totalAno) / 3).toFixed(1) // meses com dados
+    ? (parseFloat(totalAno) / 3).toFixed(1)
     : '0.0';
 
   const cards = [
@@ -39,12 +38,14 @@ const StatCards = ({ registros }) => {
               {card.label}
             </span>
             <span style={{ fontSize: '1.4rem' }}>{card.emoji}</span>
-        </div>
-        <div style={{ fontSize: '1.8rem', fontWeight: '700', color: '#222' }}>
+          </div>
+          <div style={{ fontSize: '1.8rem', fontWeight: '700', color: '#222' }}>
             {card.valor}
+          </div>
         </div>
-      </div>
-    ))}
-
+      ))}
+    </div>
+  );
+};
 
 export default StatCards;
