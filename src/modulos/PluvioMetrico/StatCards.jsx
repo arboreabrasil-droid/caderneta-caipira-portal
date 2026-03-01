@@ -11,7 +11,9 @@ const StatCards = ({ registros }) => {
     return mes === mesAtual && parseInt(ano) === anoAtual;
   });
 
-  const totalMes = doMes.reduce((sum, r) => sum + r.volume, 0).toFixed(1);
+  const totalMes = doMes
+    .reduce((sum, r) => sum + parseFloat(r.volume_mm || r.volume || 0), 0)
+    .toFixed(1);
   
   console.log('📊 Cards - doMes:', doMes.length, 'Total:', totalMes);
 
