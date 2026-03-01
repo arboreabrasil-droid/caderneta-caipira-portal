@@ -103,9 +103,13 @@ function Portal({ user, plano }) {
                 </p>
 
                 {ativo ? (
-                  <button className="w-full bg-marrom-escuro hover:bg-marrom-escuro/90 text-white py-4 px-8 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-200 font-serif">
+                  <button
+                    onClick={() => setModuloAtivo(id)}
+                    className="w-full bg-marrom-escuro hover:bg-marrom-escuro/90 text-white py-4 px-8 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-200 font-serif"
+                  >
                     Abrir Módulo
                   </button>
+
                 ) : (
                   <div className="bg-marrom-claro/50 border-2 border-marrom-medio/50 rounded-xl p-6 text-center">
                     <p className="text-lg font-semibold text-marrom-escuro font-serif mb-2">Plano Completo</p>
