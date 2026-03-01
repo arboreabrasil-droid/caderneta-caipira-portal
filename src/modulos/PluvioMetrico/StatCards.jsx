@@ -31,33 +31,20 @@ const StatCards = ({ registros }) => {
   ];
 
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-      gap: '1rem',
-      marginBottom: '2rem'
-    }}>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       {cards.map((card) => (
-        <div key={card.label} style={{
-          background: '#fff',
-          border: '1px solid #e0e0e0',
-          borderRadius: '12px',
-          padding: '1.2rem 1.5rem',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.07)'
-        }}>
+        <div key={card.label} className="bg-white border-4 border-marrom-claro rounded-2xl p-6 shadow-lg font-serif">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#888', letterSpacing: '0.05em' }}>
               {card.label}
             </span>
             <span style={{ fontSize: '1.4rem' }}>{card.emoji}</span>
-          </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: '700', color: '#222' }}>
-            {card.valor}
-          </div>
         </div>
-      ))}
-    </div>
-  );
-};
+        <div style={{ fontSize: '1.8rem', fontWeight: '700', color: '#222' }}>
+            {card.valor}
+        </div>
+      </div>
+    ))}
+
 
 export default StatCards;
