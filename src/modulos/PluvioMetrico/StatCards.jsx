@@ -18,8 +18,13 @@ const StatCards = ({ registros }) => {
   const totalMes = doMes.reduce((sum, r) => sum + parseFloat(r.volume_mm || r.volume || 0), 0).toFixed(1);
   const totalAno = doAno.reduce((sum, r) => sum + parseFloat(r.volume_mm || r.volume || 0), 0).toFixed(1);
   const totalRegistros = registros.length;
-  const mediaMensal = totalRegistros > 0
-    ? (parseFloat(totalAno) / 3).toFixed(1)
+  // Quantos meses distintos têm registro no ano
+  const mesesComDados = new Set(
+    doAno.map((r) => r.data.split('-')[1]) // pega "01", "02", "03"...
+  ).size;
+
+  const mediaMensal = mesesComDados > 0
+    ? (parseFloat(totalAno) / mesesComDados).toFixed(1)
     : '0.0';
 
   const cards = [
