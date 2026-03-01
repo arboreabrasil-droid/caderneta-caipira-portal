@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 
 export default function FormRegistro({ onSalvar, loading }) {
-  const [data, setData] = useState(new Date().toISOString().split('T')[0]);
+  const [data, setData] = useState(() => {
+  const hoje = new Date();
+  const dia = hoje.getDate().toString().padStart(2, '0');
+  const mes = (hoje.getMonth() + 1).toString().padStart(2, '0');
+  const ano = hoje.getFullYear();
+  return `${ano}-${mes}-${dia}`;
+});
   const [volume, setVolume] = useState('');
   const [observacoes, setObservacoes] = useState('');
   const [salvando, setSalvando] = useState(false);
