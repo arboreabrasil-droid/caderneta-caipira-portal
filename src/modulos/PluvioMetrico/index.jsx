@@ -8,6 +8,3 @@ const [moduloAtivo, setModuloAtivo] = useState(null);
 if (moduloAtivo === 'chuva') {
   return <PluvioMetrico user={user} onVoltar={() => setModuloAtivo(null)} />;
 }
-
-// No botão "Abrir Módulo" do card chuva
-onClick={() => setModuloAtivo(id)}
