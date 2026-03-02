@@ -1,7 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
-import { collection, addDoc, getDocs, query, where, orderBy, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../firebase'; // ajustar path conforme projeto
-import { useAuth } from '../../contexts/AuthContext';
+import { 
+  collection, 
+  addDoc, 
+  getDocs, 
+  query, 
+  where, 
+  orderBy, 
+  serverTimestamp 
+} from 'firebase/firestore';
+import { auth, db } from '../../firebase';  // ✅ Padrão do projeto
+import { useAuth } from '../../contexts/AuthContext';  // ✅ Confirme se existe
 
 export const useCaderno = () => {
   const { user } = useAuth();
@@ -19,11 +27,10 @@ export const useCaderno = () => {
     return Math.floor(diffTime / (1000 * 60 * 60 * 24));
   };
 
-  // Status da cultura baseado em DAP e eventos
-  const getStatus = (cultura, eventosCultura) => {
+  // Status da cultura baseado em DAP
+  const getStatus = (cultura) => {
     const dap = calcularDAP(cultura.dataPlantio);
-    if (eventosCultura.some(e => e.tipo === 'colheita')) return 'colhida';
-    if (dap > 180) return 'colhida'; // safra longa automaticamente colhida
+    if (dap > 180) return 'colhida';
     return 'ativa';
   };
 
@@ -99,14 +106,8 @@ export const useCaderno = () => {
         data,
         tipo,
         observacoes,
-        fotos: [], // reservado para futura implementação
+        fotos: [], // reservado para v2
         createdAt: serverTimestamp()
-      });
-      // Recarrega eventos da cultura
-      const eventosAtualizados = await carregarEventos(culturaId);
-      setEventos(prev => {
-        const outros = prev.filter(e => e.culturaId !== culturaId);
-        return [...outros, ...eventosAtualizados];
       });
     } catch (error) {
       console.error('Erro adicionando evento:', error);
