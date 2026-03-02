@@ -8,11 +8,10 @@ import {
   orderBy, 
   serverTimestamp 
 } from 'firebase/firestore';
-import { auth, db } from '../../firebase';  // ✅ Padrão do projeto
-import { useAuth } from '../../contexts/AuthContext';  // ✅ Confirme se existe
+import { auth, db } from '../../firebase';  // ✅ Padrão do Pluviométrico
 
 export const useCaderno = () => {
-  const { user } = useAuth();
+  const user = auth.currentUser;  // ✅ Direto do Firebase Auth
   const [culturas, setCulturas] = useState([]);
   const [eventos, setEventos] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -143,6 +142,7 @@ export const useCaderno = () => {
     criarCultura,
     adicionarEvento,
     statusIcon,
-    tiposEvento
+    tiposEvento,
+    user  // exporta user para debug
   };
 };
