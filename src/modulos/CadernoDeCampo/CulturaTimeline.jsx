@@ -42,6 +42,7 @@ const CulturaTimeline = () => {
     const eventosAtualizados = await carregarEventos(culturaId);
     setEventos(eventosAtualizados);
     setNovaObs('');
+    document.getElementById('novo-evento-modal')?.close();
   };
 
   if (loading || !cultura) {
@@ -158,63 +159,73 @@ const CulturaTimeline = () => {
         +
       </button>
 
-      {/* Modal Rápido Novo Evento */}
-      <dialog id="novo-evento-modal" className="backdrop:bg-black/50 p-0">
-        <div className="bg-white border-4 border-marrom-claro rounded-3xl p-8 shadow-2xl max-w-md mx-auto mt-20 font-serif">
-          <h3 className="text-xl font-bold text-marrom-escuro mb-6">Novo Evento Rápido</h3>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-marrom-escuro font-bold mb-2 text-sm">Data</label>
-              <input
-                type="date"
-                value={novaData}
-                onChange={(e) => setNovaData(e.target.value)}
-                className="w-full p-3 border-2 border-marrom-claro rounded-xl font-serif focus:border-green-400"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-marrom-escuro font-bold mb-2 text-sm">Tipo</label>
-              <select
-                value={novoTipo}
-                onChange={(e) => setNovoTipo(e.target.value)}
-                className="w-full p-3 border-2 border-marrom-claro rounded-xl font-serif focus:border-green-400"
-              >
-                {Object.entries(tiposEvento).map(([key, info]) => (
-                  <option key={key} value={key}>{info.label}</option>
-                ))}
-              </select>
-            </div>
-            
-            <textarea
-              rows={3}
-              placeholder="Observações rápidas..."
-              value={novaObs}
-              onChange={(e) => setNovaObs(e.target.value)}
-              className="w-full p-3 border-2 border-marrom-claro rounded-xl font-serif focus:border-green-400 resize-none"
-            />
-          </div>
-          
-          <div className="flex gap-3 mt-8 pt-6 border-t-4 border-marrom-claro">
+      {/* Modal Rápido Novo Evento - CORRIGIDO */}
+      <dialog id="novo-evento-modal">
+        <form method="dialog" className="p-0">
+          <div className="bg-white border-4 border-marrom-claro rounded-3xl p-8 shadow-2xl max-w-md mx-auto mt-20 font-serif relative">
             <button
               type="button"
               onClick={() => document.getElementById('novo-evento-modal').close()}
-              className="flex-1 py-3 px-4 bg-gray-200 text-marrom-escuro rounded-xl font-bold hover:bg-gray-300 font-serif"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
             >
-              Cancelar
+              ×
             </button>
-            <button
-              type="button"
-              onClick={handleNovoEvento}
-              disabled={!novaObs.trim()}
-              className="flex-1 py-3 px-4 bg-green-600 text-white rounded-xl font-bold shadow-lg hover:bg-green-700 disabled:bg-gray-400 font-serif"
-            >
-              Salvar
-            </button>
+            
+            <h3 className="text-xl font-bold text-marrom-escuro mb-6">Novo Evento Rápido</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-marrom-escuro font-bold mb-2 text-sm">Data</label>
+                <input
+                  type="date"
+                  value={novaData}
+                  onChange={(e) => setNovaData(e.target.value)}
+                  className="w-full p-3 border-2 border-marrom-claro rounded-xl font-serif focus:border-green-400"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-marrom-escuro font-bold mb-2 text-sm">Tipo</label>
+                <select
+                  value={novoTipo}
+                  onChange={(e) => setNovoTipo(e.target.value)}
+                  className="w-full p-3 border-2 border-marrom-claro rounded-xl font-serif focus:border-green-400"
+                >
+                  {Object.entries(tiposEvento).map(([key, info]) => (
+                    <option key={key} value={key}>{info.label}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <textarea
+                rows={3}
+                placeholder="Observações rápidas..."
+                value={novaObs}
+                onChange={(e) => setNovaObs(e.target.value)}
+                className="w-full p-3 border-2 border-marrom-claro rounded-xl font-serif focus:border-green-400 resize-none"
+              />
+            </div>
+            
+            <div className="flex gap-3 mt-8 pt-6 border-t-4 border-marrom-claro">
+              <button
+                type="button"
+                onClick={() => document.getElementById('novo-evento-modal').close()}
+                className="flex-1 py-3 px-4 bg-gray-200 text-marrom-escuro rounded-xl font-bold hover:bg-gray-300 font-serif"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleNovoEvento}
+                disabled={!novaObs.trim()}
+                className="flex-1 py-3 px-4 bg-green-600 text-white rounded-xl font-bold shadow-lg hover:bg-green-700 disabled:bg-gray-400 font-serif"
+              >
+                Salvar
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
+        </form>
+      </dialog>
     </div>
   );
 };
