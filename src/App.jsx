@@ -3,6 +3,7 @@ import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth, provider } from './firebase';
 import { verificarAcesso } from './auth';
 import Portal from './Portal';
+import CadernoDeCampo from './modulos/CadernoDeCampo/CadernoDeCampo';
 import AceiteTermos from './AceiteTermos';
 
 function App() {
