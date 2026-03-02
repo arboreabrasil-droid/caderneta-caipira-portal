@@ -3,7 +3,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from './firebase';
 import Admin from './Admin';
 import PluvioMetrico from './modulos/PluvioMetrico';
-import CadernoDeCampo from '../modulos/CadernoDeCampo/CadernoDeCampo';
+import CadernoDeCampo from './modulos/CadernoDeCampo/CadernoDeCampo';
 import { MODULOS_POR_PLANO, MODULOS_INFO } from './config/planos';
 
 const ICONES_MAP = {
