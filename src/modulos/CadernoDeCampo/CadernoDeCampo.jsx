@@ -20,23 +20,22 @@ const CadernoDeCampo = ({ user, onVoltar }) => {
         <span className="font-bold text-white text-lg">Caderno de Campo</span>
       </div>
       {showBack ? (
-       <button
-         onClick={() => navegarPara(backTela)}
-         className="text-amarelo-claro hover:text-white underline font-medium text-sm"
-       >
+        <button
+          onClick={() => navegarPara(backTela)}
+          className="text-amarelo-claro hover:text-white underline font-medium text-sm"
+        >
           ← Voltar
         </button>
-     ) : (
+      ) : (
         <button
-         onClick={onVoltar}
-         className="text-amarelo-claro hover:text-white underline font-medium text-sm"
+          onClick={onVoltar}
+          className="text-amarelo-claro hover:text-white underline font-medium text-sm"
         >
-        ← Voltar ao Portal
+          ← Voltar ao Portal
         </button>
       )}
-   </header>
+    </header>
   );
-
 
   const renderTela = () => {
     switch (tela) {
@@ -101,25 +100,18 @@ const CadernoDeCampo = ({ user, onVoltar }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {renderTela()}
+    <div className="min-h-screen bg-bege-claro flex flex-col">
+      <div className="flex-1">
+        {renderTela()}
+      </div>
+      <footer className="bg-marrom-escuro mt-16 pt-8 pb-4">
+        <div className="max-w-6xl mx-auto px-8 text-center">
+          <h3 className="text-2xl font-serif font-bold text-white mb-2">Caderneta Caipira</h3>
+          <p className="text-sm text-amarelo-claro">© 2026 Caipira da Cidade. Todos os direitos reservados.</p>
+        </div>
+      </footer>
     </div>
   );
 };
-  return (
-  <div className="min-h-screen bg-bege-claro flex flex-col">
-    <div className="flex-1">
-      {renderTela()}
-    </div>
-
-    {/* RODAPÉ — idêntico ao Portal */}
-    <footer className="bg-marrom-escuro mt-16 pt-8 pb-4">
-      <div className="max-w-6xl mx-auto px-8 text-center">
-        <h3 className="text-2xl font-serif font-bold text-white mb-2">Caderneta Caipira</h3>
-        <p className="text-sm text-amarelo-claro">© 2026 Caipira da Cidade. Todos os direitos reservados.</p>
-      </div>
-    </footer>
-  </div>
-);
 
 export default CadernoDeCampo;
