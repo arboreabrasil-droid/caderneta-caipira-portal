@@ -13,54 +13,30 @@ const CadernoDeCampo = ({ user, onVoltar }) => {
     setTela(novaTela);
   };
 
-  const renderHeader = (titulo = 'Caderno de Campo', showBack = false, backTela = 'dashboard') => (
-    <div style={{
-      background: '#2E7D32',
-      color: 'white',
-      padding: '1rem 2rem',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-    }}>
-      <h1 style={{ margin: 0, fontSize: '1.3rem', fontWeight: 'bold' }}>
-        📓 {titulo}
-      </h1>
+  const renderHeader = (titulo, showBack = false, backTela = 'dashboard') => (
+    <header className="bg-[#15803d] shadow-md px-6 py-4 flex items-center justify-between sticky top-0 z-50 font-serif">
+      <div className="flex items-center gap-3">
+        <img src="/logo-caipira.png" alt="Caipira da Cidade" className="h-10 w-auto" />
+        <span className="font-bold text-white text-lg">Caderno de Campo</span>
+      </div>
       {showBack ? (
-        <button
-          onClick={() => navegarPara(backTela)}
-          style={{
-            color: 'white',
-            background: 'rgba(255,255,255,0.15)',
-            border: 'none',
-            padding: '0.5rem 1rem',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontWeight: 600,
-            fontSize: '0.95rem'
-          }}
-        >
+       <button
+         onClick={() => navegarPara(backTela)}
+         className="text-amarelo-claro hover:text-white underline font-medium text-sm"
+       >
           ← Voltar
         </button>
-      ) : (
+     ) : (
         <button
-          onClick={onVoltar}
-          style={{
-            color: 'white',
-            background: 'rgba(255,255,255,0.15)',
-            border: 'none',
-            padding: '0.5rem 1rem',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontWeight: 600,
-            fontSize: '0.95rem'
-          }}
+         onClick={onVoltar}
+         className="text-amarelo-claro hover:text-white underline font-medium text-sm"
         >
-          ← Portal
+        ← Voltar ao Portal
         </button>
       )}
-    </div>
+   </header>
   );
+
 
   const renderTela = () => {
     switch (tela) {
@@ -68,7 +44,7 @@ const CadernoDeCampo = ({ user, onVoltar }) => {
         return (
           <>
             {renderHeader('Caderno de Campo', false)}
-            <div className="max-w-2xl mx-auto p-6 pb-20">
+            <div className="max-w-4xl mx-auto px-8 py-8">
               <Dashboard
                 user={user}
                 onVerCulturas={() => navegarPara('culturas')}
@@ -82,7 +58,7 @@ const CadernoDeCampo = ({ user, onVoltar }) => {
         return (
           <>
             {renderHeader('Culturas', true, 'dashboard')}
-            <div className="max-w-2xl mx-auto p-6 pb-20">
+            <div className="max-w-4xl mx-auto px-8 py-8">
               <CulturasList
                 user={user}
                 onVerTimeline={(id) => navegarPara('timeline', id)}
@@ -95,7 +71,7 @@ const CadernoDeCampo = ({ user, onVoltar }) => {
         return (
           <>
             {renderHeader('Novo Evento', true, 'dashboard')}
-            <div className="max-w-2xl mx-auto p-6 pb-20">
+            <div className="max-w-4xl mx-auto px-8 py-8">
               <NovoEvento
                 user={user}
                 culturaPreSelecionada={culturaAtiva}
@@ -109,7 +85,7 @@ const CadernoDeCampo = ({ user, onVoltar }) => {
         return (
           <>
             {renderHeader('Timeline', true, 'culturas')}
-            <div className="max-w-2xl mx-auto p-6 pb-20">
+            <div className="max-w-4xl mx-auto px-8 py-8">
               <CulturaTimeline
                 user={user}
                 culturaId={culturaAtiva}
@@ -130,5 +106,20 @@ const CadernoDeCampo = ({ user, onVoltar }) => {
     </div>
   );
 };
+  return (
+  <div className="min-h-screen bg-bege-claro flex flex-col">
+    <div className="flex-1">
+      {renderTela()}
+    </div>
+
+    {/* RODAPÉ — idêntico ao Portal */}
+    <footer className="bg-marrom-escuro mt-16 pt-8 pb-4">
+      <div className="max-w-6xl mx-auto px-8 text-center">
+        <h3 className="text-2xl font-serif font-bold text-white mb-2">Caderneta Caipira</h3>
+        <p className="text-sm text-amarelo-claro">© 2026 Caipira da Cidade. Todos os direitos reservados.</p>
+      </div>
+    </footer>
+  </div>
+);
 
 export default CadernoDeCampo;
