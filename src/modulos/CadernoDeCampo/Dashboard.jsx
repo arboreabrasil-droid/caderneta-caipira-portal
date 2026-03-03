@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useCaderno } from './useCaderno';
 
 const Dashboard = ({ onVerCulturas, onNovoCultura, onVerTimeline }) => {
-  const { culturas, carregarCulturas, calcularDAP, statusIcon, tiposEvento, carregarEventos, loading } = useCaderno();
+  const { culturas, carregarCulturas, calcularDAP, statusIcon, tiposEvento, carregarEventos, loading } = useCaderno(user);
   const [ultimosEventos, setUltimosEventos] = useState([]);
 
   useEffect(() => {

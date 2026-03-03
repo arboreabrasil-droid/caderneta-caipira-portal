@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCaderno } from './useCaderno';
 
 const CulturasList = ({ onVerTimeline, onNovoEvento }) => {
-  const { culturas, carregarCulturas, calcularDAP, statusIcon, criarCultura, loading } = useCaderno();
+  const { culturas, carregarCulturas, calcularDAP, statusIcon, criarCultura, loading } = useCaderno(user);
   const [filtro, setFiltro] = useState('ativas');
   const [showModal, setShowModal] = useState(false);
   const [novoNome, setNovoNome] = useState('');

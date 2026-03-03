@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCaderno } from './useCaderno';
 
 const NovoEvento = ({ culturaPreSelecionada, onSalvo, onVoltar }) => {
-  const { culturas, carregarCulturas, criarCultura, adicionarEvento, tiposEvento } = useCaderno();
+  const { culturas, carregarCulturas, criarCultura, adicionarEvento, tiposEvento } = useCaderno(user);
 
   const [culturaId, setCulturaId] = useState('');
   const [isNovaCultura, setIsNovaCultura] = useState(false);
