@@ -43,12 +43,14 @@ const Dashboard = ({ user, onVerCulturas, onNovoCultura, onVerTimeline }) => {
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {statCards.map((card) => (
-          <div key={card.label} className="bg-white border-4 border-marrom-claro rounded-2xl p-6 shadow-lg font-serif">
-            <div className="flex justify-between items-start mb-2">
-              <span className="text-xs font-bold text-marrom-medio tracking-wide leading-tight">{card.label}</span>
-              <span className="text-lg flex-shrink-0 ml-1">{card.emoji}</span>
+          <div key={card.label} className="bg-white border-4 border-marrom-claro rounded-2xl p-5 shadow-lg font-serif overflow-hidden">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-3xl">{card.emoji}</span>
             </div>
-            <div className="text-4xl font-bold text-marrom-escuro">{card.valor}</div>
+            <div className="text-3xl font-bold text-marrom-escuro mb-1">{card.valor}</div>
+            <div className="text-xs font-bold text-marrom-medio tracking-wide uppercase leading-tight">
+              {card.label}
+            </div>
           </div>
         ))}
       </div>
