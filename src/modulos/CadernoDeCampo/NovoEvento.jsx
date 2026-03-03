@@ -26,6 +26,11 @@ const NovoEvento = ({ user, culturaPreSelecionada, onSalvo, onVoltar }) => {
   }, [culturas, culturaPreSelecionada]);
 
   const handleSalvar = async () => {
+    console.log('handleSalvar chamado!');
+    console.log('culturaId:', culturaId);
+    console.log('observacoes:', observacoes);
+    console.log('data:', data);
+    console.log('tipo:', tipo);
     setSalvando(true);
     let targetId = culturaId;
 
@@ -165,7 +170,7 @@ const NovoEvento = ({ user, culturaPreSelecionada, onSalvo, onVoltar }) => {
         </button>
         <button
           onClick={handleSalvar}
-          disabled={salvando || (!culturaId && !novaCulturaNome.trim()) || !observacoes.trim()}
+          disabled={salvando}
           className="flex-1 py-5 bg-green-600 text-white rounded-2xl font-serif font-bold text-lg shadow-xl hover:bg-green-700 active:scale-[0.98] transition-all disabled:bg-gray-400 disabled:cursor-not-allowed"
           style={{ boxShadow: '0 10px 25px rgba(46, 125, 50, 0.4)' }}
         >
