@@ -1,54 +1,67 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
 import { useCaderno } from './useCaderno';
 
-const CulturaTimeline = () => {
-  const { culturaId } = useParams();
-  const { culturas, carregarEventos, calcularDAP, tiposEvento, adicionarEvento } = useCaderno();
-  
+const CulturaTimeline = ({ user, culturaId, onNovoEvento, onVoltar }) => {
+  const { culturas, carregarCulturas, carregarEventos, calcularDAP, tiposEvento, adicionarEvento } = useCaderno(user);
   const [cultura, setCultura] = useState(null);
   const [eventos, setEventos] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const [novaData, setNovaData] = useState('');
   const [novoTipo, setNovoTipo] = useState('adubo');
   const [novaObs, setNovaObs] = useState('');
 
   useEffect(() => {
-    const hoje = new Date().toISOString().split('T')[0];
-    setNovaData(hoje);
+    setNovaData(new Date().toISOString().split('T')[0]);
   }, []);
 
   useEffect(() => {
-    const loadCultura = async () => {
+    const init = async () => {
+      await carregarCulturas();
+    };
+    init();
+  }, [carregarCulturas]);
+
+  useEffect(() => {
+    const loadDados = async () => {
+      if (!culturaId || culturas.length === 0) return;
       setLoading(true);
-      const culturaFound = culturas.find(c => c.id === culturaId);
-      setCultura(culturaFound);
-      
-      if (culturaFound && culturaId) {
-        const eventosCultura = await carregarEventos(culturaId);
-        setEventos(eventosCultura);
+      const found = culturas.find(c => c.id === culturaId);
+      setCultura(found || null);
+      if (found) {
+        const ev = await carregarEventos(culturaId);
+        setEventos(ev);
       }
       setLoading(false);
     };
-    
-    loadCultura();
-  }, [culturaId, culturas, carregarEventos]);
+    loadDados();
+  }, [culturaId, culturas]);
 
   const handleNovoEvento = async () => {
     if (!novaObs.trim()) return;
-    
     await adicionarEvento(culturaId, novaData, novoTipo, novaObs);
-    const eventosAtualizados = await carregarEventos(culturaId);
-    setEventos(eventosAtualizados);
+    const atualizados = await carregarEventos(culturaId);
+    setEventos(atualizados);
     setNovaObs('');
-    document.getElementById('novo-evento-modal')?.close();
+    setShowModal(false);
   };
 
-  if (loading || !cultura) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="text-lg text-marrom-medio font-serif">Carregando timeline...</div>
+        <p className="text-lg text-marrom-medio font-serif">Carregando timeline...</p>
+      </div>
+    );
+  }
+
+  if (!cultura) {
+    return (
+      <div className="bg-white border-4 border-marrom-claro rounded-2xl p-12 shadow-lg text-center font-serif">
+        <p className="text-marrom-medio text-lg">Cultura não encontrada.</p>
+        <button onClick={onVoltar} className="mt-4 bg-green-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-700">
+          ← Voltar
+        </button>
       </div>
     );
   }
@@ -59,9 +72,12 @@ const CulturaTimeline = () => {
     <div>
       {/* Header Cultura */}
       <div className="bg-white border-4 border-marrom-claro rounded-2xl p-8 shadow-lg mb-8 font-serif text-center">
-        <Link to="/culturas" className="inline-flex items-center gap-2 text-marrom-escuro hover:text-green-600 mb-4 font-bold">
+        <button
+          onClick={onVoltar}
+          className="inline-flex items-center gap-2 text-marrom-escuro hover:text-green-600 mb-4 font-bold"
+        >
           ← Voltar às Culturas
-        </Link>
+        </button>
         <div className="space-y-2">
           <h1 className="text-3xl font-bold text-marrom-escuro">{cultura.nome}</h1>
           <p className="text-marrom-medio text-lg">
@@ -77,70 +93,49 @@ const CulturaTimeline = () => {
       </div>
 
       {/* Timeline */}
-      <section className="mb-20">
+      <section className="mb-24">
         <h2 className="text-2xl font-bold text-marrom-escuro mb-8 font-serif">📈 Timeline de Eventos</h2>
-        
+
         {eventos.length === 0 ? (
           <div className="bg-white border-4 border-marrom-claro rounded-2xl p-12 shadow-lg text-center font-serif">
-            <p className="text-marrom-medio text-lg mb-6">Nenhum evento registrado</p>
-            <p className="text-sm text-marrom-medio mb-8">Comece adicionando o primeiro!</p>
+            <p className="text-marrom-medio text-lg mb-4">Nenhum evento registrado</p>
+            <p className="text-sm text-marrom-medio">Use o botão + para adicionar o primeiro!</p>
           </div>
         ) : (
           <div className="relative">
-            {/* Linha vertical */}
             <div className="absolute left-12 top-0 bottom-0 w-1 bg-marrom-claro rounded-full" />
-            
             <div className="space-y-6">
               {eventos.map((evento) => {
                 const tipoInfo = tiposEvento[evento.tipo];
                 const isExpanded = expandedId === evento.id;
-                
                 return (
                   <div key={evento.id} className="relative">
-                    {/* Ponto da timeline */}
-                    <div className="absolute left-10 top-12 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center shadow-lg border-4 border-white z-10">
-                      <span className="text-xl">{tipoInfo.emoji}</span>
+                    <div className="absolute left-10 top-8 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center shadow-lg border-4 border-white z-10">
+                      <span className="text-sm">{tipoInfo?.emoji}</span>
                     </div>
-                    
-                    {/* Card do evento */}
-                    <div 
-                      className={`bg-white border-4 border-marrom-claro rounded-2xl p-6 shadow-lg font-serif cursor-pointer hover:shadow-xl transition-all ml-20 ${
-                        isExpanded ? 'ring-2 ring-green-200' : ''
-                      }`}
+                    <div
+                      className={`bg-white border-4 border-marrom-claro rounded-2xl p-6 shadow-lg font-serif cursor-pointer hover:shadow-xl transition-all ml-20 ${isExpanded ? 'ring-2 ring-green-200' : ''}`}
                       onClick={() => setExpandedId(isExpanded ? null : evento.id)}
                     >
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <span className="text-2xl">{tipoInfo.emoji}</span>
+                          <span className="text-2xl">{tipoInfo?.emoji}</span>
                           <div>
-                            <h3 className="text-xl font-bold text-marrom-escuro">{tipoInfo.label}</h3>
-                            <p className="text-marrom-medio">
+                            <h3 className="text-lg font-bold text-marrom-escuro">{tipoInfo?.label}</h3>
+                            <p className="text-marrom-medio text-sm">
                               {evento.data.split('-').reverse().join('/')}
                             </p>
                           </div>
                         </div>
-                        <span className={`text-2xl ${isExpanded ? 'rotate-180' : ''} transition-transform`}>
-                          ▼
-                        </span>
+                        <span className={`text-xl transition-transform ${isExpanded ? 'rotate-180' : ''}`}>▼</span>
                       </div>
-                      
-                      <div className={`overflow-hidden transition-all ${isExpanded ? 'mt-4 pb-4' : 'h-0'}`}>
-                        <p className="text-marrom-medio leading-relaxed whitespace-pre-wrap">
-                          {evento.observacoes}
-                        </p>
-                        {evento.fotos?.length > 0 && (
-                          <div className="flex gap-3 mt-4 flex-wrap">
-                            {evento.fotos.map((foto, i) => (
-                              <img
-                                key={i}
-                                src={foto}
-                                alt={`Foto ${i+1}`}
-                                className="w-24 h-24 rounded-xl object-cover border-2 border-marrom-claro shadow-md"
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                      {isExpanded && (
+                        <div className="mt-4 pt-4 border-t-2 border-marrom-claro">
+                          <p className="text-marrom-medio leading-relaxed whitespace-pre-wrap">
+                            {evento.observacoes}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -152,27 +147,18 @@ const CulturaTimeline = () => {
 
       {/* FAB */}
       <button
-        onClick={() => document.getElementById('novo-evento-modal')?.showModal()}
-        className="fixed bottom-8 right-8 w-20 h-20 bg-green-600 text-white rounded-full shadow-2xl flex items-center justify-center text-3xl font-bold hover:bg-green-700 active:scale-95 transition-all z-50"
+        onClick={() => setShowModal(true)}
+        className="fixed bottom-8 right-8 w-16 h-16 bg-green-600 text-white rounded-full shadow-2xl flex items-center justify-center text-3xl font-bold hover:bg-green-700 active:scale-95 transition-all z-50"
         style={{ boxShadow: '0 15px 35px rgba(46, 125, 50, 0.5)' }}
       >
         +
       </button>
 
-      {/* Modal Rápido Novo Evento - CORRIGIDO */}
-      <dialog id="novo-evento-modal">
-        <form method="dialog" className="p-0">
-          <div className="bg-white border-4 border-marrom-claro rounded-3xl p-8 shadow-2xl max-w-md mx-auto mt-20 font-serif relative">
-            <button
-              type="button"
-              onClick={() => document.getElementById('novo-evento-modal').close()}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
-            >
-              ×
-            </button>
-            
+      {/* Modal Novo Evento Rápido */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white border-4 border-marrom-claro rounded-3xl p-8 shadow-2xl max-w-md w-full font-serif">
             <h3 className="text-xl font-bold text-marrom-escuro mb-6">Novo Evento Rápido</h3>
-            
             <div className="space-y-4">
               <div>
                 <label className="block text-marrom-escuro font-bold mb-2 text-sm">Data</label>
@@ -180,52 +166,47 @@ const CulturaTimeline = () => {
                   type="date"
                   value={novaData}
                   onChange={(e) => setNovaData(e.target.value)}
-                  className="w-full p-3 border-2 border-marrom-claro rounded-xl font-serif focus:border-green-400"
+                  className="w-full p-3 border-2 border-marrom-claro rounded-xl font-serif focus:border-green-400 focus:outline-none"
                 />
               </div>
-              
               <div>
                 <label className="block text-marrom-escuro font-bold mb-2 text-sm">Tipo</label>
                 <select
                   value={novoTipo}
                   onChange={(e) => setNovoTipo(e.target.value)}
-                  className="w-full p-3 border-2 border-marrom-claro rounded-xl font-serif focus:border-green-400"
+                  className="w-full p-3 border-2 border-marrom-claro rounded-xl font-serif focus:border-green-400 focus:outline-none"
                 >
                   {Object.entries(tiposEvento).map(([key, info]) => (
                     <option key={key} value={key}>{info.label}</option>
                   ))}
                 </select>
               </div>
-              
               <textarea
                 rows={3}
                 placeholder="Observações rápidas..."
                 value={novaObs}
                 onChange={(e) => setNovaObs(e.target.value)}
-                className="w-full p-3 border-2 border-marrom-claro rounded-xl font-serif focus:border-green-400 resize-none"
+                className="w-full p-3 border-2 border-marrom-claro rounded-xl font-serif focus:border-green-400 focus:outline-none resize-none"
               />
             </div>
-            
-            <div className="flex gap-3 mt-8 pt-6 border-t-4 border-marrom-claro">
+            <div className="flex gap-3 mt-6 pt-6 border-t-4 border-marrom-claro">
               <button
-                type="button"
-                onClick={() => document.getElementById('novo-evento-modal').close()}
-                className="flex-1 py-3 px-4 bg-gray-200 text-marrom-escuro rounded-xl font-bold hover:bg-gray-300 font-serif"
+                onClick={() => setShowModal(false)}
+                className="flex-1 py-3 bg-gray-200 text-marrom-escuro rounded-xl font-bold hover:bg-gray-300 font-serif"
               >
                 Cancelar
               </button>
               <button
-                type="button"
                 onClick={handleNovoEvento}
                 disabled={!novaObs.trim()}
-                className="flex-1 py-3 px-4 bg-green-600 text-white rounded-xl font-bold shadow-lg hover:bg-green-700 disabled:bg-gray-400 font-serif"
+                className="flex-1 py-3 bg-green-600 text-white rounded-xl font-bold shadow-lg hover:bg-green-700 disabled:bg-gray-400 font-serif"
               >
                 Salvar
               </button>
             </div>
           </div>
-        </form>
-      </dialog>
+        </div>
+      )}
     </div>
   );
 };
