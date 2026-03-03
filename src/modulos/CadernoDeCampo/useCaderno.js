@@ -33,11 +33,14 @@ export const useCaderno = (user) => {  // ← recebe user como parâmetro
   };
 
   const tiposEvento = {
-    plantio: { emoji: '🌱', label: 'Plantio' },
-    adubo:   { emoji: '🌾', label: 'Adubo' },
-    defensivo: { emoji: '🛡️', label: 'Defensivo' },
-    capina:  { emoji: '✂️', label: 'Capina' },
-    colheita: { emoji: '📦', label: 'Colheita' }
+    pre_plantio: { emoji: '🪱', label: 'Pré-Plantio' },
+    plantio:     { emoji: '🌱', label: 'Plantio' },
+    irrigacao:   { emoji: '💧', label: 'Irrigação' },
+    adubo:       { emoji: '🌾', label: 'Adubo' },
+    defensivo:   { emoji: '🛡️', label: 'Defensivo' },
+    capina:      { emoji: '⛏️', label: 'Capina' },
+    colheita:    { emoji: '📦', label: 'Colheita' },
+    conclusao:   { emoji: '🏁', label: 'Conclusão' },
   };
 
   const carregarCulturas = useCallback(async () => {
@@ -95,29 +98,36 @@ export const useCaderno = (user) => {  // ← recebe user como parâmetro
   };
 
   const adicionarEvento = async (culturaId, data, tipo, observacoes) => {
-  console.log('adicionarEvento chamado:', { culturaId, data, tipo, observacoes });
-  console.log('user:', user?.uid);
-  
-  if (!user?.uid) {
-    console.log('BLOQUEADO: user.uid ausente');
-    return;
-  }
-  
-  try {
-    await addDoc(collection(db, 'caderno_eventos'), {
-      userId: user.uid,
-      culturaId,
-      data,
-      tipo,
-      observacoes,
-      fotos: [],
-      createdAt: serverTimestamp()
-    });
-    console.log('Evento salvo com sucesso!');
-  } catch (error) {
-    console.error('Erro adicionando evento:', error);
-  }
-};
+    console.log('adicionarEvento chamado:', { culturaId, data, tipo, observacoes });
+    console.log('user:', user?.uid);
+
+    if (!user?.uid) {
+      console.log('BLOQUEADO: user.uid ausente');
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, 'caderno_eventos'), {
+        userId: user.uid,
+        culturaId,
+        data,
+        tipo,
+        observacoes,
+        fotos: [],
+        createdAt: serverTimestamp()
+      });
+
+      if (tipo === 'conclusao') {
+        await updateDoc(doc(db, 'culturas', culturaId), {
+          status: 'concluida',
+        });
+      }
+
+      console.log('Evento salvo com sucesso!'); 
+    } catch (error) {
+      console.error('Erro adicionando evento:', error);
+    }
+  };
 
   return {
     culturas,
