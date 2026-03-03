@@ -103,7 +103,7 @@ const CulturasList = ({ user, onVerTimeline, onNovoEvento }) => {
                   </div>
                   <button
                     onClick={() => onVerTimeline(cultura.id)}
-                    className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 text-xl hover:bg-blue-200 transition-all"
+                    className="flex-shrink-0 w-10 h-10 bg-marrom-claro rounded-xl flex items-center justify-center text-marrom-escuro text-lg hover:bg-marrom-medio hover:text-white transition-all"
                   >
                     →
                   </button>
