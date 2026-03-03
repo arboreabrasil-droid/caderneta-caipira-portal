@@ -63,8 +63,8 @@ export const useCaderno = (user) => {  // ← recebe user como parâmetro
     try {
       const q = query(
         collection(db, 'caderno_eventos'),
-        where('userId', '==', user.uid),
-        where('culturaId', '==', culturaId),
+        where('culturaId', '==', culturaId),  // culturaId primeiro
+        where('userId', '==', user.uid),      // userId segundo
         orderBy('data', 'desc')
       );
       const snapshot = await getDocs(q);
