@@ -46,7 +46,7 @@ const CulturasList = ({ user, onVerTimeline, onNovoEvento }) => {
           onClick={() => setFiltro('todas')}
           className={`flex-1 py-4 px-6 rounded-xl font-serif font-bold text-sm transition-all ${
             filtro === 'todas'
-              ? 'bg-white shadow-lg border-2 border-blue-600 text-blue-700'
+              ? 'bg-white shadow-lg border-2 border-green-600 text-green-700'
               : 'text-marrom-medio hover:bg-white'
           }`}
         >
