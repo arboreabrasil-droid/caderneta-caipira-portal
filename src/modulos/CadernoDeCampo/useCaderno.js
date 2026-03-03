@@ -95,21 +95,29 @@ export const useCaderno = (user) => {  // ← recebe user como parâmetro
   };
 
   const adicionarEvento = async (culturaId, data, tipo, observacoes) => {
-    if (!user?.uid) return;
-    try {
-      await addDoc(collection(db, 'caderno_eventos'), {
-        userId: user.uid,
-        culturaId,
-        data,
-        tipo,
-        observacoes,
-        fotos: [],
-        createdAt: serverTimestamp()
-      });
-    } catch (error) {
-      console.error('Erro adicionando evento:', error);
-    }
-  };
+  console.log('adicionarEvento chamado:', { culturaId, data, tipo, observacoes });
+  console.log('user:', user?.uid);
+  
+  if (!user?.uid) {
+    console.log('BLOQUEADO: user.uid ausente');
+    return;
+  }
+  
+  try {
+    await addDoc(collection(db, 'caderno_eventos'), {
+      userId: user.uid,
+      culturaId,
+      data,
+      tipo,
+      observacoes,
+      fotos: [],
+      createdAt: serverTimestamp()
+    });
+    console.log('Evento salvo com sucesso!');
+  } catch (error) {
+    console.error('Erro adicionando evento:', error);
+  }
+};
 
   return {
     culturas,
