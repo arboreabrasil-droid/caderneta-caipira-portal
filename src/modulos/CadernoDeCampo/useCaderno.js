@@ -1,14 +1,15 @@
 import { useState, useCallback } from 'react';
 import { 
   collection, 
-  addDoc, 
+  addDoc,
+  updateDoc,
+  doc,
   getDocs, 
   query, 
   where, 
   orderBy, 
   serverTimestamp 
 } from 'firebase/firestore';
-import { db } from '../../firebase';
 
 export const useCaderno = (user) => {  // ← recebe user como parâmetro
   const [culturas, setCulturas] = useState([]);
@@ -118,7 +119,7 @@ export const useCaderno = (user) => {  // ← recebe user como parâmetro
       });
 
       if (tipo === 'conclusao') {
-        await updateDoc(doc(db, 'culturas', culturaId), {
+        await updateDoc(doc(db, 'caderno_culturas', culturaId), {
           status: 'concluida',
         });
       }
