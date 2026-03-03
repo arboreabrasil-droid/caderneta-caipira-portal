@@ -16,7 +16,7 @@ const CulturasList = ({ user, onVerTimeline, onNovoEvento }) => {
   }, [carregarCulturas]);
 
   const filteredCulturas = filtro === 'ativas'
-    ? culturas.filter(c => calcularDAP(c.dataPlantio) < 180)
+    ? culturas.filter(c => c.status !== 'concluida')
     : culturas;
 
   const handleCriarCultura = async () => {
@@ -75,7 +75,7 @@ const CulturasList = ({ user, onVerTimeline, onNovoEvento }) => {
         ) : (
           filteredCulturas.map((cultura) => {
             const dap = calcularDAP(cultura.dataPlantio);
-            const status = dap < 180 ? 'ativa' : 'colhida';
+            const status = cultura.status === 'concluida' ? 'concluida' : 'ativa';
             const si = statusIcon(status);
 
             return (
@@ -93,11 +93,11 @@ const CulturasList = ({ user, onVerTimeline, onNovoEvento }) => {
                         <span className="ml-4 font-bold text-green-600">DAP {dap}</span>
                       </p>
                       <span className={`px-3 py-1 rounded-full font-bold text-sm ${
-                        status === 'ativa'
-                          ? 'bg-green-100 text-green-800 border-2 border-green-400'
-                          : 'bg-yellow-100 text-yellow-800 border-2 border-yellow-400'
+                        status === 'concluida'
+                          ? 'bg-marrom-claro text-marrom-escuro border-2 border-marrom-medio'
+                          : 'bg-green-100 text-green-800 border-2 border-green-400'
                       }`}>
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                        {status === 'concluida' ? '🏁 Concluída' : 'Ativa'}
                       </span>
                     </div>
                   </div>
