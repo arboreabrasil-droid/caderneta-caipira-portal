@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCaderno } from './useCaderno';
 
-const NovoEvento = ({ culturaPreSelecionada, onSalvo, onVoltar }) => {
+const NovoEvento = ({ user, culturaPreSelecionada, onSalvo, onVoltar }) => {
   const { culturas, carregarCulturas, criarCultura, adicionarEvento, tiposEvento } = useCaderno(user);
 
   const [culturaId, setCulturaId] = useState('');
