@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCaderno } from './useCaderno';
 
 const CulturaTimeline = ({ user, culturaId, onNovoEvento, onVoltar }) => {
-  const { culturas, carregarCulturas, carregarEventos, calcularDAP, tiposEvento, adicionarEvento } = useCaderno(user);
+  const { culturas, carregarCulturas, carregarEventos, calcularDAP, tiposEvento, adicionarEvento, toggleCulturaStatus } = useCaderno(user);
   const [cultura, setCultura] = useState(null);
   const [eventos, setEventos] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
@@ -83,11 +83,33 @@ const CulturaTimeline = ({ user, culturaId, onNovoEvento, onVoltar }) => {
           <p className="text-marrom-medio text-lg">
             Plantio: {cultura.dataPlantio.split('-').reverse().join('/')}
           </p>
-          <div className="inline-flex items-center gap-4 bg-green-50 p-4 rounded-xl border-2 border-green-200">
-            <span className="text-4xl font-bold text-green-600">DAP {dap}</span>
-            <span className="px-4 py-2 bg-green-200 text-green-800 rounded-full font-bold">
-              Ativa ✅
+          <div className={`inline-flex items-center gap-4 p-4 rounded-xl border-2 ${
+            cultura.status === 'concluida'
+              ? 'bg-marrom-claro border-marrom-medio'
+              : 'bg-green-50 border-green-200'
+          }`}>
+            <span className={`text-4xl font-bold ${
+              cultura.status === 'concluida' ? 'text-marrom-escuro' : 'text-green-600'
+            }`}>
+             DAP {dap}
             </span>
+            <button
+              onClick={async () => {
+                await toggleCulturaStatus(culturaId, cultura.status);
+                setCultura(prev => ({
+                  ...prev,
+                  status: prev.status === 'concluida' ? 'ativa' : 'concluida'
+                }));
+              }}
+              className={`px-4 py-2 rounded-full font-bold transition-all hover:opacity-80 cursor-pointer ${
+                cultura.status === 'concluida'
+                  ? 'bg-marrom-medio text-white'
+                  : 'bg-green-200 text-green-800'
+              }`}
+              title="Clique para alternar status"
+            >
+              {cultura.status === 'concluida' ? '🏁 Concluída' : 'Ativa ✅'}
+            </button>
           </div>
         </div>
       </div>

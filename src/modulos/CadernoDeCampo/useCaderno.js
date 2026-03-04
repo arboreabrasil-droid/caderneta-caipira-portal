@@ -41,8 +41,8 @@ export const useCaderno = (user) => {  // ← recebe user como parâmetro
     defensivo:   { emoji: '🛡️', label: 'Defensivo' },
     capina:      { emoji: '⛏️', label: 'Capina' },
     colheita:    { emoji: '📦', label: 'Colheita' },
-    conclusao:   { emoji: '🏁', label: 'Conclusão' },
-  };
+    };
+
 
   const carregarCulturas = useCallback(async () => {
     if (!user?.uid) return;
@@ -130,6 +130,18 @@ export const useCaderno = (user) => {  // ← recebe user como parâmetro
     }
   };
 
+  const toggleCulturaStatus = useCallback(async (culturaId, statusAtual) => {
+    try {
+      await updateDoc(doc(db, 'caderno_culturas', culturaId), {
+        status: statusAtual === 'concluida' ? 'ativa' : 'concluida',
+      });
+      await carregarCulturas();
+    } catch (error) {
+      console.error('Erro alternando status:', error);
+    }
+  }, [carregarCulturas]);
+
+
   return {
     culturas,
     eventos,
@@ -140,6 +152,7 @@ export const useCaderno = (user) => {  // ← recebe user como parâmetro
     carregarCulturas,
     carregarEventos,
     criarCultura,
-    adicionarEvento
+    adicionarEvento,
+    toggleCulturaStatus
   };
 };
